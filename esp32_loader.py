@@ -7,6 +7,9 @@ import json
 from threading import Thread
 
 class Serial_Port_Manager(object):
+   def __init__(self):
+       self.packet_recieved = False
+
    def open( self,comm_port ):
     
        ser = serial.Serial(
@@ -23,6 +26,9 @@ class Serial_Port_Manager(object):
    def close(self):
       self.handle.close()
 
+   def write_packet(self,message):
+       self.handle.write(message)   
+      
    def read_packet(self):
        
         packet =[]
@@ -35,7 +41,9 @@ class Serial_Port_Manager(object):
                packet.append(x)    
         return "".join(packet)
  
-# BASE64:
+
+ 
+ 
    def detect_command(self,packet):
       
        front_end = packet[0:7]
@@ -44,7 +52,7 @@ class Serial_Port_Manager(object):
        back_end = packet[-4:]
        if back_end != ":END" :
          return False
-      
+       self.packet_recieved = True
        hex_packet = packet[7:-4]
        
        binary_packet = binascii.unhexlify(hex_packet)
@@ -74,4 +82,6 @@ if __name__ == "__main__":
    t = Thread(target=read_packet, args=(esp_serial,))
    t.start()
    while(True):
-     time.sleep(1)
+     time.sleep(.1)
+     if esp_serial.packet_recieved == True:
+        esp_serial.write_packet("sending packets to esp32")
