@@ -1,0 +1,7 @@
+<<<<<<< HEAD
+git remote add origin1  https://github.com/glenn-edgar/esp32_python_client.git
+=======
+git remote add origin1 https://github.com/glenn-edgar/esp32_gateway.git
+>>>>>>> 565d1e9592f66a5ff2db869aefa0bfda83387fa5
+git remote -v 
+git pull origin1 master
