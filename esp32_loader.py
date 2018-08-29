@@ -66,12 +66,19 @@ class Serial_Port_Manager(object):
 def read_packet(esp_serial):
   while(True):
       packet = esp_serial.read_packet()
+    
       if esp_serial.detect_command(packet) == False:
          print(packet)
  
-
-      
-      
+def send_wifi_setup( serial_handle):
+    access_dict = {}
+    access_dict["ssid"] = "onyx_1_G"
+    access_dict["password"] = "read2go"
+    access_dict["hostname"] = "esp32_slave"
+    packed_object = msgpack.packb(access_dict, use_bin_type=True)
+    ascii_packet = binascii.hexlify(packed_object)+"\n"
+    print(ascii_packet)
+    serial_handle.handle.write(ascii_packet)
       
 if __name__ == "__main__": 
    print("starting program") 
@@ -82,6 +89,7 @@ if __name__ == "__main__":
    t = Thread(target=read_packet, args=(esp_serial,))
    t.start()
    while(True):
-     time.sleep(.1)
+     time.sleep(5)
      if esp_serial.packet_recieved == True:
-        esp_serial.write_packet("sending packets to esp32")
+        send_wifi_setup(esp_serial)
+        
