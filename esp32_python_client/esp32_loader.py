@@ -5,7 +5,7 @@ import msgpack
 import binascii
 import json
 import crcmod
-
+from libs.esp32_commands_py3 import ESP32_Message_Generator
 from threading import Thread
 
 class Serial_Port_Manager(object):
@@ -65,6 +65,7 @@ class Serial_Port_Manager(object):
        if hex_crc == crc_packet:
            try:
               x = msgpack.unpackb(binary_packet)
+              print(x)
            except:
                print("bad message pack")
            try:
@@ -108,7 +109,9 @@ def send_wifi_setup( serial_handle):
       
 if __name__ == "__main__": 
    print("starting program") 
+   
    esp_serial = Serial_Port_Manager()
+   msg_generator = ESP32_Message_Generator(esp_serial)
    print("opening setial port")
    esp_serial.open("COM4")
    print("starting thread \n")
@@ -116,5 +119,5 @@ if __name__ == "__main__":
    while(True):
      time.sleep(5)
      if esp_serial.packet_recieved == True:
-        send_wifi_setup(esp_serial)
+        msg_generator.request_wifi_mac()
         
