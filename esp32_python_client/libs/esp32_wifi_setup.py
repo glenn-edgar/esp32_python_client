@@ -13,5 +13,5 @@ class ESP32_WIFI_MANAGER(object):
        access_dict["ssid"] = "onyx_1_G"
        access_dict["password"] = "read2go"
        access_dict["hostname"] = "esp32_slave"
-       self.mess_gen.request_write_file("WIFI.MPK",access_dict)
+       self.mess_gen.request_write_file("/spiffs/WIFI.MPK",access_dict)
       

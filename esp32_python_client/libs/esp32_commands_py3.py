@@ -34,11 +34,33 @@ class ESP32_Message_Generator(object):
       print("write_file",file_name,request)
       self.send_request(request)
 
-  def request_list_directory(self):
+  def request_read_file(self,file_name):
+      request = {}
+      request["COMMAND"] = "FILE_READ"
+      request["DATA"] = {"FILE_NAME":file_name}
+      print("read_file",file_name,request)
+      self.send_request(request)
+      
+  def request_read_delete(self,file_name):
+      request = {}
+      request["COMMAND"] = "FILE_DELETE"
+      request["DATA"] = {"FILE_NAME":file_name}
+      print("file delete",file_name,request)
+      self.send_request(request)
+
+
+  def request_rename_file(self,from_name, to_name):
+      request = {}
+      request["COMMAND"] = "FILE_RENAME"
+      request["DATA"] = {"FROM_NAME":from_name, "TO_NAME":to_name}
+      print("file rename",request)
+      self.send_request(request)
+
+  def request_list_directory(self,mount_point):
          
       request = {}
       request["COMMAND"] = "FILE_DIR"
-      request["DATA"] = "N/A"
+      request["DATA"] = {"FILE_MOUNT": mount_point}
       self.send_request(request)   
       
   def send_request(self,msg_dict):

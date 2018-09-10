@@ -73,6 +73,11 @@ class Serial_Port_Manager(object):
        if hex_crc == crc_packet:
            try:
               x = msgpack.unpackb(binary_packet)
+              print(x)
+              print(x[b"TOPIC"])
+              if x[b"TOPIC"] == b"COMMAND_RESPONSE":
+                 if x[b"COMMAND"] == b"FILE_READ":
+                      print("####",msgpack.unpackb(x[b"DATA"][b"FILE_DATA"]))
               self.packet_recieved = True
               print(x)
            except:
@@ -110,7 +115,7 @@ if __name__ == "__main__":
    print("starting thread \n")
    esp_serial.start()
    while(True):
-     time.sleep(5)
+     time.sleep(1)
      if esp_serial.packet_recieved == True:
         #print("request mac address")
         #msg_generator.request_wifi_mac()
@@ -121,10 +126,41 @@ if __name__ == "__main__":
         #msg_generator.request_reboot()
         #time.sleep(3)
         #esp_serial.set_packet_recieved(False)
-        print("file directory")
-        msg_generator.request_list_directory()
-        time.sleep(5)
-        print("wifi setup")
+        '''
+        print("read file")
+        msg_generator.request_list_directory("/spiffs/")
+        time.sleep(1)
         wifi_manager.write_wifi_setup()
-        time.sleep(2)   
+        time.sleep(1)
+        msg_generator.request_read_file("/spiffs/WIFI.MPK")
+        time.sleep(1)
+        msg_generator.request_list_directory("/spiffs/")
+
+        time.sleep(1)
+        msg_generator.request_read_delete("/spiffs/WIFI.MPK");
+        time.sleep(1)
+        msg_generator.request_list_directory("/spiffs/")
+        #wifi_manager.write_wifi_setup()
+        #msg_generator.request_read_file("/spiffs/WIFI.MPK")
+        time.sleep(30)
+        #print("wifi setup")
+        #wifi_manager.write_wifi_setup()
+        #time.sleep(2)   
+        '''
+        wifi_manager.write_wifi_setup()
+        time.sleep(1)
+        
+        msg_generator.request_list_directory("/spiffs/")
+        time.sleep(1)
+        msg_generator.request_rename_file("/spiffs/WIFI.MPK","/spiffs/WIFI.BKK")
+        
+        time.sleep(1)
+        msg_generator.request_read_file("/spiffs/WIFI.BKK")
+        time.sleep(1)
+        msg_generator.request_read_delete("/spiffs/WIFI.BKK");
+        time.sleep(1)
+        msg_generator.request_list_directory("/spiffs/")
+        time.sleep(30)
+ 
+        
         
