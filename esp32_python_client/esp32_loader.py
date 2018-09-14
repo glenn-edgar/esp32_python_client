@@ -54,7 +54,7 @@ class Serial_Port_Manager(object):
  
  
    def detect_command(self,packet):
-       print(packet)
+       #print(packet)
        front_end = packet[0:8]
        
        if front_end != b'MSGPACK:':
@@ -65,7 +65,7 @@ class Serial_Port_Manager(object):
        
        hex_packet = packet[8:-8]
        binary_packet = binascii.unhexlify(hex_packet)
-       print("binary",binary_packet)
+       #print("binary input packet----->",binary_packet)
        hex_crc =(self.crc16(binary_packet))
        
        crc_packet = int(packet[-8:-4], 16)
@@ -74,12 +74,13 @@ class Serial_Port_Manager(object):
            try:
               x = msgpack.unpackb(binary_packet)
               print(x)
-              print(x[b"TOPIC"])
+              #print(x[b"TOPIC"])
               if x[b"TOPIC"] == b"COMMAND_RESPONSE":
-                 if x[b"COMMAND"] == b"FILE_READ":
-                      print("####",msgpack.unpackb(x[b"DATA"][b"FILE_DATA"]))
+                 if (x[b"COMMAND"] == b"FILE_READ"): #and(x[b"DATA"][b"FILE_DATA"] != None ):
+                      if x[b"DATA"][b"FILE_DATA"] != None:
+                         print("####",msgpack.unpackb(x[b"DATA"][b"FILE_DATA"]))
               self.packet_recieved = True
-              print(x)
+              
            except:
                print("bad message pack")
         
@@ -96,7 +97,7 @@ class Serial_Port_Manager(object):
           packet = self.read_packet()
          
           if self.detect_command(packet) == False:
-             pass #print(packet)
+              print(packet)
 
 
    def start(self):
@@ -114,39 +115,88 @@ if __name__ == "__main__":
    esp_serial.open("COM4")
    print("starting thread \n")
    esp_serial.start()
-   while(True):
-     time.sleep(1)
-     if esp_serial.packet_recieved == True:
-        #print("request mac address")
-        #msg_generator.request_wifi_mac()
-        #time.sleep(3)
+  
+
+   while(1):
+    time.sleep(1)
+    if esp_serial.packet_recieved == True:
+        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ starting loop @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+        msg_generator.request_list_commands()
+
+        msg_generator.request_wifi_mac()
+        time.sleep(3)
+        msg_generator.request_heap_space()
+        time.sleep(.3)
+        wifi_manager.write_wifi_setup()
+        time.sleep(1)
+        msg_generator.request_list_directory("/spiffs/")
+        time.sleep(.3)         
+        msg_generator.request_read_file("/spiffs/WIFI.MPK")
+        time.sleep(.3)
+        wifi_manager.write_wifi_setup()
+        time.sleep(1)
+  
+ 
+        msg_generator.request_rename_file("/spiffs/WIFI.MPK","/spiffs/WIFI.BKK")
+        time.sleep(1)
+        msg_generator.request_list_directory("/spiffs")
+        time.sleep(.3)
+        msg_generator.request_delete_file("/spiffs/WIFI.BKK")
+        time.sleep(1)
+ 
+        msg_generator.request_list_directory("/spiffs")
+        time.sleep(.3)
+        #msg_generator.format_spiff_drive()
+        #time.sleep(60)
+        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ending @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
         #print("list commands")
         #msg_generator.request_list_commands()
+        #time.sleep(.3)
+         #time.sleep(60)
+        #msg_generator.request_list_directory("/spiffs/")
+        #time.sleep(1)  
+        #wifi_manager.write_wifi_setup()
+        #time.sleep(1)
+
+        '''
         #time.sleep(3)
         #msg_generator.request_reboot()
         #time.sleep(3)
         #esp_serial.set_packet_recieved(False)
-        '''
-        print("read file")
+      
+        #print("read file")
+        #msg_generator.format_spiff_drive()
+        #time.sleep(60)
         msg_generator.request_list_directory("/spiffs/")
         time.sleep(1)
+ 
         wifi_manager.write_wifi_setup()
         time.sleep(1)
-        msg_generator.request_read_file("/spiffs/WIFI.MPK")
-        time.sleep(1)
+ 
         msg_generator.request_list_directory("/spiffs/")
 
         time.sleep(1)
-        msg_generator.request_read_delete("/spiffs/WIFI.MPK");
+        msg_generator.request_read_file("/spiffs/WIFI.MPK")
+        time.sleep(1)
+        msg_generator.request_read_file("WIFI.MPK")
+        
+        time.sleep(1)
+        msg_generator.request_delete_file("/spiffs/WIFI.MPK")
+        time.sleep(1)
+        msg_generator.request_delete_file("WIFI.MPK")
         time.sleep(1)
         msg_generator.request_list_directory("/spiffs/")
+        time.sleep(1)
+        print("$$$$$$$$$$$$$$$$$$$$$ Done $$$$$$$$$$$$$$$$$$$$$$$$$ ")
+       
         #wifi_manager.write_wifi_setup()
         #msg_generator.request_read_file("/spiffs/WIFI.MPK")
         time.sleep(30)
+   
         #print("wifi setup")
         #wifi_manager.write_wifi_setup()
         #time.sleep(2)   
-        '''
+
         wifi_manager.write_wifi_setup()
         time.sleep(1)
         
@@ -160,7 +210,8 @@ if __name__ == "__main__":
         msg_generator.request_read_delete("/spiffs/WIFI.BKK");
         time.sleep(1)
         msg_generator.request_list_directory("/spiffs/")
-        time.sleep(30)
+        '''
+        time.sleep(1)
  
         
         

@@ -30,43 +30,59 @@ class ESP32_Message_Generator(object):
   def request_write_file(self,file_name,data):
       request = {}
       request["COMMAND"] = "FILE_WRITE"
-      request["DATA"] = {"FILE_NAME":file_name, "FILE_DATA":data}
-      print("write_file",file_name,request)
+      request["DATA"] = {"FILE_NAME":file_name,  "FILE_DATA":data}
       self.send_request(request)
 
   def request_read_file(self,file_name):
       request = {}
       request["COMMAND"] = "FILE_READ"
-      request["DATA"] = {"FILE_NAME":file_name}
-      print("read_file",file_name,request)
+      request["DATA"] = {"FILE_NAME":file_name.encode()}
+      
       self.send_request(request)
       
-  def request_read_delete(self,file_name):
+  def format_spiff_drive(self):
+      request = {}
+      request["COMMAND"] = "FORMAT_SPIFFS"
+      request["DATA"] = "N/A"
+      
+      self.send_request(request)
+
+      
+      
+  def request_delete_file(self,file_name):
       request = {}
       request["COMMAND"] = "FILE_DELETE"
       request["DATA"] = {"FILE_NAME":file_name}
-      print("file delete",file_name,request)
+      
       self.send_request(request)
 
 
   def request_rename_file(self,from_name, to_name):
       request = {}
       request["COMMAND"] = "FILE_RENAME"
-      request["DATA"] = {"FROM_NAME":from_name, "TO_NAME":to_name}
-      print("file rename",request)
+      request["DATA"] = {"FROM_NAME":from_name, "TO_NAME":to_name.encode()}
+      
       self.send_request(request)
 
+  def request_heap_space(self):
+         
+      request = {}
+      request["COMMAND"] = "HEAP_SPACE"
+      request["DATA"] = "N/A"
+      self.send_request(request)
+      
   def request_list_directory(self,mount_point):
          
       request = {}
       request["COMMAND"] = "FILE_DIR"
       request["DATA"] = {"FILE_MOUNT": mount_point}
-      self.send_request(request)   
-      
+      self.send_request(request)  
+
+
   def send_request(self,msg_dict):
      binary_data = msgpack.packb(msg_dict, use_bin_type=True)
      crc16_bin = self.crc16(binary_data)
      crc_16_str = '{0:x}'.format(crc16_bin)     
      ascii_packet = binascii.hexlify(binary_data)+crc_16_str.encode()+b'\n'
-     print("ascii_packet",ascii_packet)
-     print(self.serial_handler.handle.write(ascii_packet))
+     #print("ascii_packet",ascii_packet)
+     self.serial_handler.handle.write(ascii_packet)

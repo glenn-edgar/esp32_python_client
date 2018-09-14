@@ -8,7 +8,7 @@ class ESP32_WIFI_MANAGER(object):
        self.mess_gen = ESP32_Message_Generator(serial_handle)
        
    def write_wifi_setup(self):
-       print("wifi_setup")
+       
        access_dict = {}
        access_dict["ssid"] = "onyx_1_G"
        access_dict["password"] = "read2go"
