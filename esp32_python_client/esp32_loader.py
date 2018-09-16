@@ -133,10 +133,9 @@ if __name__ == "__main__":
         time.sleep(.3)         
         msg_generator.request_read_file("/spiffs/WIFI.MPK")
         time.sleep(.3)
-        wifi_manager.write_wifi_setup()
-        time.sleep(1)
-  
- 
+        exit()
+    
+        '''
         msg_generator.request_rename_file("/spiffs/WIFI.MPK","/spiffs/WIFI.BKK")
         time.sleep(1)
         msg_generator.request_list_directory("/spiffs")
@@ -157,7 +156,7 @@ if __name__ == "__main__":
         #time.sleep(1)  
         #wifi_manager.write_wifi_setup()
         #time.sleep(1)
-
+        '''
         '''
         #time.sleep(3)
         #msg_generator.request_reboot()

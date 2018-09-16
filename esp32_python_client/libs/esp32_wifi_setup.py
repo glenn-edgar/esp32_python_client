@@ -10,8 +10,8 @@ class ESP32_WIFI_MANAGER(object):
    def write_wifi_setup(self):
        
        access_dict = {}
-       access_dict["ssid"] = "onyx_1_G"
-       access_dict["password"] = "read2go"
+       access_dict["ssid"] = "RaspberryPI_Router"
+       access_dict["password"] = "ready2go"
        access_dict["hostname"] = "esp32_slave"
        self.mess_gen.request_write_file("/spiffs/WIFI.MPK",access_dict)
       

@@ -84,5 +84,5 @@ class ESP32_Message_Generator(object):
      crc16_bin = self.crc16(binary_data)
      crc_16_str = '{0:x}'.format(crc16_bin)     
      ascii_packet = binascii.hexlify(binary_data)+crc_16_str.encode()+b'\n'
-     #print("ascii_packet",ascii_packet)
+     print("ascii_packet",ascii_packet)
      self.serial_handler.handle.write(ascii_packet)
