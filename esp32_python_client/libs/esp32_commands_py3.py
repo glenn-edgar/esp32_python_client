@@ -27,7 +27,9 @@ class ESP32_Message_Generator(object):
       request["DATA"] = "N/A"
       self.send_request(request)
 
+
   def request_write_file(self,file_name,data):
+      print("$$$$$$$$$$$$$$$$$$ file write "+file_name+ "   $$$$$$$$$$$$$$$$$$$$")
       request = {}
       request["COMMAND"] = "FILE_WRITE"
       request["DATA"] = {"FILE_NAME":file_name,  "FILE_DATA":data}
@@ -80,9 +82,14 @@ class ESP32_Message_Generator(object):
 
 
   def send_request(self,msg_dict):
+     print("msg_dict",msg_dict)
      binary_data = msgpack.packb(msg_dict, use_bin_type=True)
      crc16_bin = self.crc16(binary_data)
      crc_16_str = '{0:x}'.format(crc16_bin)     
+     if len(crc_16_str) != 4:
+         crc_16_str = "0"+crc_16_str
      ascii_packet = binascii.hexlify(binary_data)+crc_16_str.encode()+b'\n'
-     print("ascii_packet",ascii_packet)
+     print("crc ascii",crc_16_str)
+     print("len ",len(ascii_packet))
+     print("out     ascii_packet --->",ascii_packet)
      self.serial_handler.handle.write(ascii_packet)
