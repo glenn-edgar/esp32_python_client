@@ -16,6 +16,6 @@ temp_mqtt[b"PORT"] = 8883
 temp_mqtt[b"HOST"] = b"nano_data_center_demo.fios-router.home"
 temp_mqtt[b"USER_NAME"] = b"pi"
 temp_mqtt[b"PASSWORD"] = b"ready2go"
-temp_mqtt[b"BASE_TOPIC"] = b"REMOTES/ESP32_SWITCHES"
+temp_mqtt[b"BASE_TOPIC"] = b"REMOTES/ESP32_SWITCHES/"
 temp[b"mqtt"] = temp_mqtt
 remote_configuration["esp32_switches"] = temp
