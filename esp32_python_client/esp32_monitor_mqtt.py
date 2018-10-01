@@ -20,6 +20,7 @@ class MQTT_TX_TRANSPORT(object):
         self.tx_topic = topic
 
     def write_packet(self,payload):
+        print("$$$$$$$$$$$$$$$$$$$$$$$$$",self.tx_topic,payload)
         self.mqtt_class.publish(self.tx_topic,payload)
 
 
@@ -33,7 +34,7 @@ def instanciate_transport():
 
 if __name__ == "__main__": 
     mqtt_class = instanciate_transport()
-    transport = MQTT_TX_TRANSPORT(mqtt_class,"REMOTES/lan_gpio/BUILT_IN_CMDS")
+    transport = MQTT_TX_TRANSPORT(mqtt_class,"REMOTES/ESP32_SWITCHES/BUILT_IN_CMD")
     msg_generator = ESP32_Message_Generator(transport)
     mqtt_class.start()
     while mqtt_class.is_connected() == False:

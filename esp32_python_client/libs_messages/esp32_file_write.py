@@ -48,6 +48,12 @@ class FILE_TRANSFER(object):
        temp = self.configuration[b"mqtt"]
        self.mess_gen.request_write_file( b"/spiffs/MQTT.MPK",temp)
        
+  def write_io_input_setup(self):
+       temp = self.configuration
+       if b"d_inputs" in temp:
+           data = temp[b"d_inputs"]
+           self.mess_gen.request_write_file( "/spiffs/IO_INPUT.MPK",data)
+       
   def file_read_callback( self, filename, file_data):
        
        if filename  ==  b"/spiffs/IBEACON.MPK":

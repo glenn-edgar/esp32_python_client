@@ -23,11 +23,8 @@ if __name__ == "__main__":
    
    esp_serial = instanciate_transport()
    msg_generator = ESP32_Message_Generator(esp_serial)
-   wifi_manager = ESP32_WIFI_MANAGER(esp_serial)
-   print("opening setial port")
-   esp_serial.open("COM5")
-   print("starting thread \n")
-   esp_serial.start()
+   
+
   
 
    while(1):
