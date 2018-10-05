@@ -3,9 +3,10 @@ import crcmod
 import binascii
 class ESP32_Message_Generator(object):
 
-  def __init__(self,transport_handle):
+  def __init__(self,transport_handle, topic = None):
         self.transport_handler = transport_handle
         self.crc16 = crcmod.mkCrcFun(	0x11021, 0xffff, False, 0)
+        self.topic = topic
 
         
   def request_wifi_mac(self):
@@ -82,7 +83,12 @@ class ESP32_Message_Generator(object):
 
 
   def send_request(self,msg_dict):
+     if self.topic != None:
+         msg_dict["topic"] = self.topic
      print("msg_dict",msg_dict)
      binary_data = msgpack.packb(msg_dict, use_bin_type=True)
-     self.transport_handler.write_packet(binary_data)
+     if self.topic != None:
+         self.transport_handler.write_packet(binary_data,self.topic)
+     else:
+         self.transport_handler.write_packet(binary_data)
  

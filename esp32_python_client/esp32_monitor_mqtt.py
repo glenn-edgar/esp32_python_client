@@ -19,23 +19,25 @@ class MQTT_TX_TRANSPORT(object):
     def change_topic(self,topic):
         self.tx_topic = topic
 
-    def write_packet(self,payload):
-        print("$$$$$$$$$$$$$$$$$$$$$$$$$",self.tx_topic,payload)
-        self.mqtt_class.publish(self.tx_topic,payload)
+    def write_packet(self,payload,topic):
+        temp = msgpack.unpackb(payload)
+        print("$$$$$$$$$$$$$$$$$$$$$$$$$",self.tx_topic,topic, payload)
+       
+        self.mqtt_class.publish(self.tx_topic+topic,payload)
 
 
 def instanciate_transport():
     length  = len(sys.argv)
     if length >5:
-       return MQTT_CLIENT( sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4],sys.argv[5]  ) #ip,port,username,password,topic     
+       return MQTT_CLIENT( sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4]  ) #ip,port,username,password,topic     
     else:
         print("usage is esp32_monitor_mqtt.py ip port username  password topic ")
         exit()
 
 if __name__ == "__main__": 
     mqtt_class = instanciate_transport()
-    transport = MQTT_TX_TRANSPORT(mqtt_class,"REMOTES/ESP32_SWITCHES/BUILT_IN_CMD")
-    msg_generator = ESP32_Message_Generator(transport)
+    transport = MQTT_TX_TRANSPORT(mqtt_class,sys.argv[5])
+    msg_generator = ESP32_Message_Generator(transport,"BUILT_IN_CMD")
     mqtt_class.start()
     while mqtt_class.is_connected() == False:
         time.sleep(1)

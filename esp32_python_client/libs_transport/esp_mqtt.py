@@ -12,7 +12,7 @@ from threading import Thread
 
 class MQTT_CLIENT(object):
     
-   def __init__(self,ip,port,username,password,topic):
+   def __init__(self,ip,port,username,password,topic = None):
         self.ip = ip
         self.port = int(port)
         self.username = username
