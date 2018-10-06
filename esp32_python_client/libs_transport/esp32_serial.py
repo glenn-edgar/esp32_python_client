@@ -98,7 +98,8 @@ class Serial_Port_Manager(object):
                  if (x[b"COMMAND"] == b"FILE_READ"): 
                      
                      if self.file_read_cb != None:
-                          self.file_read_cb( x[b"DATA"][b"FILE_NAME"], msgpack.unpackb(x[b"DATA"][b"FILE_DATA"]))
+                          if x[b"DATA"][b"FILE_DATA"] != None:
+                               self.file_read_cb( x[b"DATA"][b"FILE_NAME"], msgpack.unpackb(x[b"DATA"][b"FILE_DATA"]))
               
               if temp_flag:
                  if (x[b"COMMAND"] == b"WIFI_MAC_ADDRESS"): 

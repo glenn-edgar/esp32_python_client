@@ -4,6 +4,7 @@ pull_down = 1
 pull_up_down = 2
 pull_floating = 3
 
+b'0\xae\xa4\x15\x16l'
 
 remote_configuration = {}
 
@@ -12,17 +13,18 @@ temp["mac"] = b'0\xae\xa4\x18\th'
 temp_wifi = {}
 temp_wifi[b"ssid"] = b"onyx_1_G"
 temp_wifi[b"password"] = b"ready2go"
-temp_wifi[b"hostname"] = b"op_override_panel"
+temp_wifi[b"hostname"] = b"OP_OVERRIDE_1"
 temp[b"wifi"] = temp_wifi
 temp_ibeacon = {}
 temp_ibeacon[b"beacon_name"] = b"esp32_switches  "
+
 temp[b"ibeacon"] = temp_ibeacon
 temp_mqtt = {}
 temp_mqtt[b"PORT"] = 8883
 temp_mqtt[b"HOST"] = b"nano_data_center_demo.fios-router.home"
 temp_mqtt[b"USER_NAME"] = b"pi"
 temp_mqtt[b"PASSWORD"] = b"ready2go"
-temp_mqtt[b"BASE_TOPIC"] = b"REMOTES/OP_OVERRIDE/"
+temp_mqtt[b"BASE_TOPIC"] = b"REMOTES/OP_OVERRIDE_1/"
 temp[b"mqtt"] = temp_mqtt
 
 temp_d_inputs = {}
@@ -40,4 +42,35 @@ temp[b"d_inputs"] = temp_d_inputs
 #temp["d_pwm"] = temp_d_pwm
 
 #temp["d_analog] = temp_analog
-remote_configuration["op_override_panel"] = temp
+remote_configuration["OP_OVERRIDE_1"] = temp
+
+temp = {}
+temp["mac"] = b'0\xae\xa4\x15\x16l'
+
+temp_wifi = {}
+temp_wifi[b"ssid"] = b"onyx_1_G"
+temp_wifi[b"password"] = b"ready2go"
+temp_wifi[b"hostname"] = b"PI_RESET_1"
+temp[b"wifi"] = temp_wifi
+temp_ibeacon = {}
+temp_ibeacon[b"beacon_name"] = b"esp32_switches  "
+
+temp[b"ibeacon"] = temp_ibeacon
+temp_mqtt = {}
+temp_mqtt[b"PORT"] = 8883
+temp_mqtt[b"HOST"] = b"nano_data_center_demo.fios-router.home"
+temp_mqtt[b"USER_NAME"] = b"pi"
+temp_mqtt[b"PASSWORD"] = b"ready2go"
+temp_mqtt[b"BASE_TOPIC"] = b"REMOTES/PI_RESET_1/"
+temp[b"mqtt"] = temp_mqtt
+
+temp_d_outputs = {}
+temp_d_outputs[b"pins"] = [23,22,21,19,18,5,17,16]
+temp_d_outputs[b"init_values"] = [ 1,1,1,1, 1,1,1,1  ]
+assert len(temp_d_outputs[b"pins"]) == len(temp_d_outputs[b"init_values"])
+
+
+temp[b"d_outputs"] = temp_d_outputs
+
+#
+remote_configuration["PI_RESET_1"] = temp

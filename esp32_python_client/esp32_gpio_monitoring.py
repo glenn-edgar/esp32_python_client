@@ -19,6 +19,8 @@ class MQTT_TX_TRANSPORT(object):
         self.base_topic = base_topic
 
     def write_packet(self,payload,topic):
+        print("base topic",self.base_topic)
+        print("topic",topic)
         print("$$$$$$$$$$$$$$$$$$$$$$$$$",self.base_topic+topic)
         self.mqtt_class.publish(self.base_topic+topic,payload)
 
@@ -39,4 +41,5 @@ if __name__ == "__main__":
     while mqtt_class.is_connected() == False:
         time.sleep(1)
     print("mqtt is connectoed")
-    gpio_message.read_gpio_pins([23,22,21,19,18,5,17,16])
+    #gpio_message.read_gpio_pins([23,22,21,19,18,5,17,16])
+    gpio_message.write_gpio_pins([23,22,21,19,18,5,17,16],[0,0,0,0 ,0,0,0,0])

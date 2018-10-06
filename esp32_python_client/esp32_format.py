@@ -14,6 +14,14 @@ from libs_messages.esp32_file_write import FILE_TRANSFER
 from threading import Thread
 
 
+def instanciate_transport(configuration_data):
+    length  = len(sys.argv)
+    print("usaage  serial config_name, port")
+    assert length > 1
+    if sys.argv[1] == "serial":
+         assert length > 3 
+         configuration  = configuration_data[sys.argv[2]]
+         return configuration ,Serial_Port_Manager(sys.argv[3])         
 
      
 if __name__ == "__main__": 
