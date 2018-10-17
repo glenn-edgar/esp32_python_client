@@ -31,7 +31,7 @@ def instanciate_transport():
     if length >5:
        return MQTT_CLIENT( sys.argv[1],sys.argv[2],sys.argv[3],sys.argv[4]  ) #ip,port,username,password,topic     
     else:
-        print("usage is esp32_monitor_mqtt.py ip port username  password topic ")
+        print("usage is esp32_monitor_mqtt.py ip port username  password  ")
         exit()
 
 if __name__ == "__main__": 

@@ -52,10 +52,17 @@ class FILE_TRANSFER(object):
        temp = self.configuration
        
        if b"d_outputs" in temp:
-           
-           
+
            data = temp[b"d_outputs"]
            self.mess_gen.request_write_file( "/spiffs/IO_OUT.MPK",data)
+           
+           
+  def write_pwm_setup(self):
+       tenp = self.configuration
+       if b"d_pwm_outputs" in temp:
+           data = temp[b"d_pwm_outputs"]
+           self.mess_gen.request_write_file( "/spiffs/IO_PWM.MPK",data)
+      
 
   def write_io_input_setup(self):
        temp = self.configuration

@@ -17,12 +17,10 @@ from threading import Thread
 
 def instanciate_transport(configuration_data):
     length  = len(sys.argv)
-    print("usaage  serial config_name, port")
+    print("usaage  config_name")
     assert length > 1
-    if sys.argv[1] == "serial":
-         assert length > 3 
-         configuration  = configuration_data[sys.argv[2]]
-         return configuration ,Serial_Port_Manager(sys.argv[3])         
+    configuration  = configuration_data[sys.argv[1]]
+    return configuration ,Serial_Port_Manager(configuration["com"])         
 
 
      
@@ -60,6 +58,8 @@ if __name__ == "__main__":
         file_transfer.write_io_input_setup()
         time.sleep(1)
         file_transfer.write_io_output_setup()
+        time.sleep(1)
+        file_transfer.write_pwm_setup()
         time.sleep(1)
         msg_generator.request_read_file("/spiffs/WIFI.MPK")
         time.sleep(1)

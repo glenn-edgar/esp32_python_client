@@ -21,7 +21,17 @@ class ESP32_Message_Generator(object):
       request["topic"] = "OUTPUTS/GPIO/SET"
       request["init_values"] = values
       self.send_request(request)      
-      
+
+
+   def write_gpio_pulse(self, pulse_pin,starting_value,ending_value,time_tick):
+       request = {}
+       request["topic"] = "OUTPUTS/GPIO/SET_PULSE"
+       request["PULSE_PIN"] = pulse_pin
+       request["PULSE_STARTING_VALUE"] = starting_value
+       request["PULSE_ENDING_VALUE"] = ending_value
+       request["PULSE_TIME_TICK"] = time_tick
+       self.send_request(request)
+
 
    def send_request(self,msg_dict):
      print("msg_dict",msg_dict)

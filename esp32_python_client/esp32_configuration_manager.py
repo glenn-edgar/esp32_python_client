@@ -74,3 +74,34 @@ temp[b"d_outputs"] = temp_d_outputs
 
 #
 remote_configuration["PI_RESET_1"] = temp
+
+temp = {}
+temp["mac"] = b'0\xae\xa4\x90\xc0\xc4'
+
+temp_wifi = {}
+temp_wifi[b"ssid"] = b"onyx_1_G"
+temp_wifi[b"password"] = b"ready2go"
+temp_wifi[b"hostname"] = b"PUMP_MONITOR_1"
+temp[b"wifi"] = temp_wifi
+temp_ibeacon = {}
+temp_ibeacon[b"beacon_name"] = b"esp32_switches  "
+
+temp[b"ibeacon"] = temp_ibeacon
+temp_mqtt = {}
+temp_mqtt[b"PORT"] = 8883
+temp_mqtt[b"HOST"] = b"nano_data_center_demo.fios-router.home"
+temp_mqtt[b"USER_NAME"] = b"pi"
+temp_mqtt[b"PASSWORD"] = b"ready2go"
+temp_mqtt[b"BASE_TOPIC"] = b"REMOTES/PUMP_MONITOR_1/"
+temp[b"mqtt"] = temp_mqtt
+
+temp[b"d_pwm_outputs"] = {}
+pwm_conf_1 = { "duty_a": 75. , "duty_b": 25., "frequency": 4000, "pin_a": 4, "pin_b":0 }  
+pwm_conf_2 = { "duty_a": 25. , "duty_b": 75., "frequency": 4000, "pin_a": 2, "pin_b":15}  
+temp[b"d_pwm_outputs"]["PWM_OUTPUTS"] = [pwm_conf_1,pwm_conf_2]
+
+
+
+#
+temp["com"] = "COM4"
+remote_configuration["PUMP_MONITOR_1"] = temp
