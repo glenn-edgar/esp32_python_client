@@ -36,11 +36,13 @@ class MQTT_CLIENT(object):
        
    def on_connect(self,client, userdata, flags, rc):
        print("Connected with result code "+str(rc)) 
-       client.subscribe("REMOTES/#", qos=0)   
+       #client.subscribe("REMOTES/#", qos=0)
+       client.subscribe("#")       
        self.is_connected_flag = True       
 
    # The callback for when a PUBLISH message is received from the server.
    def on_message(self, client, userdata, msg):
+       print(msg.topic,msg.payload)
        print(msg.topic, msgpack.unpackb(msg.payload))
        
    def publish(self,topic,payload):

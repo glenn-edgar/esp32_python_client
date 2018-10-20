@@ -1,6 +1,5 @@
-
-import time
 import sys
+import time
 import msgpack
 import binascii
 import json
@@ -9,6 +8,7 @@ import paho.mqtt.client as mqtt
 import ssl
 from libs_messages.esp32_commands_py3 import ESP32_Message_Generator
 from esp32_configuration_manager import *
+from libs_messages.esp32_pwm_pulse import ESP32_PWM_Message_Generator
 
 from libs_transport.esp_mqtt import MQTT_CLIENT
 
@@ -48,15 +48,19 @@ if __name__ == "__main__":
     mqtt_class = instanciate_transport()
     topic = remote_configuration[sys.argv[1]][b"mqtt"][b"BASE_TOPIC"].decode()
     transport = MQTT_TX_TRANSPORT(mqtt_class,topic)
-    msg_generator = ESP32_Message_Generator(transport,"BUILT_IN_CMD")
+    pwm_messages = ESP32_PWM_Message_Generator(transport)
+    
     mqtt_class.start()
     while mqtt_class.is_connected() == False:
         time.sleep(1)
     print("mqtt is connectoed")
-    msg_generator.request_wifi_mac()
+    time.sleep(3)
+    pwm_messages.read_pwm_pins()
+    time.sleep(5)
+    
+    pwm_messages.clear_pwm_buffer()
+    pwm_messages.write_pwm_timer(0,90.,10.)
+    pwm_messages.write_pwm_timer(1,.3,.7)
+    pwm_messages.write_pwm()
     time.sleep(1)
-    msg_generator.request_list_commands()
-    time.sleep(2)
-    msg_generator.request_heap_space()
-    time.sleep(2)
-    msg_generator.request_list_directory("/spiffs/")
+    pwm_messages.read_pwm_pins()
