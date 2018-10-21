@@ -100,7 +100,11 @@ pwm_conf_1 = { "duty_a": 75. , "duty_b": 25., "frequency": 4000, "pin_a": 4, "pi
 pwm_conf_2 = { "duty_a": 25. , "duty_b": 75., "frequency": 4000, "pin_a": 2, "pin_b":15}  
 temp[b"d_pwm_outputs"]["PWM_OUTPUTS"] = [pwm_conf_1,pwm_conf_2]
 
+temp[b"d_counter_inputs"] = {}
 
+temp[b"d_counter_inputs"][b"COUNTER_UPDATE_RATE"] = 15
+temp[b"d_counter_inputs"][b"COUNTER_FILTER_COUNT"] = 10
+temp[b"d_counter_inputs"][b"GPIO_PINS"] = [23,22,21,19]
 
 #
 temp["com"] = "COM4"

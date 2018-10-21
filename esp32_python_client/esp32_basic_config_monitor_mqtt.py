@@ -53,3 +53,10 @@ if __name__ == "__main__":
     while mqtt_class.is_connected() == False:
         time.sleep(1)
     print("mqtt is connectoed")
+    msg_generator.request_wifi_mac()
+    time.sleep(1)
+    msg_generator.request_list_commands()
+    time.sleep(2)
+    msg_generator.request_heap_space()
+    time.sleep(2)
+    msg_generator.request_list_directory("/spiffs/")

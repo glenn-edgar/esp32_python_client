@@ -61,6 +61,9 @@ if __name__ == "__main__":
         time.sleep(1)
         file_transfer.write_pwm_setup()
         time.sleep(1)
+        file_transfer.write_counter_setup()
+        time.sleep(1)
+        
         msg_generator.request_read_file("/spiffs/WIFI.MPK")
         time.sleep(1)
         msg_generator.request_read_file("/spiffs/IBEACON.MPK")
@@ -72,7 +75,10 @@ if __name__ == "__main__":
         msg_generator.request_read_file( "/spiffs/IO_INPUT.MPK")
         time.sleep(1)
         msg_generator.request_read_file( "/spiffs/IO_OUT.MPK")
-        time.sleep(1)        
+        time.sleep(1)
+        msg_generator.request_read_file( "/spiffs/IO_PULSE.MPK")
+        
+        
         
         msg_generator.request_list_directory("/spiffs/")
         time.sleep(4)         
