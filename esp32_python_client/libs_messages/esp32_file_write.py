@@ -67,8 +67,13 @@ class FILE_TRANSFER(object):
        tenp = self.configuration
        if b"d_counter_inputs" in temp:
            data = temp[b"d_counter_inputs"]
-           self.mess_gen.request_write_file( "/spiffs/IO_PULSE.MPK",data)    
-
+           self.mess_gen.request_write_file( "/spiffs/IO_PULSE.MPK",data)   
+           
+  def write_dac_setup(self):
+       tenp = self.configuration
+       if b"a_dac_outputs" in temp:
+           data = temp[b"a_dac_outputs"]
+           self.mess_gen.request_write_file("/spiffs/IO_DAC.MPK",data)    
 
   def write_io_input_setup(self):
        temp = self.configuration

@@ -63,6 +63,9 @@ if __name__ == "__main__":
         time.sleep(1)
         file_transfer.write_counter_setup()
         time.sleep(1)
+        file_transfer.write_dac_setup()
+        time.sleep(1)
+
         
         msg_generator.request_read_file("/spiffs/WIFI.MPK")
         time.sleep(1)
@@ -78,8 +81,11 @@ if __name__ == "__main__":
         time.sleep(1)
         msg_generator.request_read_file( "/spiffs/IO_PULSE.MPK")
         
-        
-        
+
+        time.sleep(1)
+        msg_generator.request_read_file( "/spiffs/IO_DAC.MPK")
+               
+        time.sleep(1)
         msg_generator.request_list_directory("/spiffs/")
         time.sleep(4)         
  

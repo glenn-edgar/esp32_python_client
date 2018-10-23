@@ -106,6 +106,13 @@ temp[b"d_counter_inputs"][b"COUNTER_UPDATE_RATE"] = 15
 temp[b"d_counter_inputs"][b"COUNTER_FILTER_COUNT"] = 10
 temp[b"d_counter_inputs"][b"GPIO_PINS"] = [23,22,21,19]
 
+temp[b"a_dac_outputs"] = {}
+pwm_conf_1 = { "value":0x10 , "channel":1 }  
+pwm_conf_2 = { "value":0xff , "channel":2 } 
+temp[b"a_dac_outputs"]["DAC_OUTPUTS"] = [pwm_conf_1,pwm_conf_2]
+
+
+
 #
 temp["com"] = "COM4"
 remote_configuration["PUMP_MONITOR_1"] = temp
