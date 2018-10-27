@@ -111,6 +111,14 @@ pwm_conf_1 = { "value":0x10 , "channel":1 }
 pwm_conf_2 = { "value":0xff , "channel":2 } 
 temp[b"a_dac_outputs"]["DAC_OUTPUTS"] = [pwm_conf_1,pwm_conf_2]
 
+temp[b"a_ad_inputs"] = {}
+ad_conf_0 = { "attenuation":3, "channel":0 }  
+ad_conf_1 = { "attenuation":3, "channel":3 }  
+ad_conf_2 = { "attenuation":3, "channel":6 }  
+ad_conf_3 = { "attenuation":3, "channel":7 }  
+ad_conf_4 = { "attenuation":3, "channel":4 }  
+ad_conf_5 = { "attenuation":3, "channel":5 }  
+temp[b"a_ad_inputs"]["ANALOG_CHANNELS"] = [ad_conf_0 ,ad_conf_1 ,ad_conf_2 ,ad_conf_3,ad_conf_4,ad_conf_5  ]
 
 
 #
