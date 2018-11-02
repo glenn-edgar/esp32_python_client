@@ -89,6 +89,7 @@ class Serial_Port_Manager(object):
        #print("crc check",hex_crc,crc_packet)
        if hex_crc == crc_packet:
            try:
+              print("cccc",binary_packet)
               x = msgpack.unpackb(binary_packet)
               print(x)
               temp_flag = x[b"TOPIC"]==b'COMMAND_RESPONSE'
@@ -99,8 +100,10 @@ class Serial_Port_Manager(object):
                      
                      if self.file_read_cb != None:
                           if x[b"DATA"][b"FILE_DATA"] != None:
-                               self.file_read_cb( x[b"DATA"][b"FILE_NAME"], msgpack.unpackb(x[b"DATA"][b"FILE_DATA"]))
-              
+                               try:
+                                 self.file_read_cb( x[b"DATA"][b"FILE_NAME"], msgpack.unpackb(x[b"DATA"][b"FILE_DATA"]))
+                               except:
+                                   pass
               if temp_flag:
                  if (x[b"COMMAND"] == b"WIFI_MAC_ADDRESS"): 
                     

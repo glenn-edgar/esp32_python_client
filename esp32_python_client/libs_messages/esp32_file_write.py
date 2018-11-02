@@ -5,6 +5,7 @@ import msgpack
 import binascii
 import json
 import crcmod
+import time
 from esp32_configuration_manager import *
 
 from libs_messages.esp32_commands_py3 import ESP32_Message_Generator
@@ -57,6 +58,15 @@ class FILE_TRANSFER(object):
            self.mess_gen.request_write_file( "/spiffs/IO_OUT.MPK",data)
            
            
+  def write_io_input_setup(self):
+       temp = self.configuration
+       
+       if b"d_inputs" in temp:
+
+           data = temp[b"d_inputs"]
+           self.mess_gen.request_write_file( "/spiffs/IO_INPUT.MPK",data)
+          
+           
   def write_pwm_setup(self):
        tenp = self.configuration
        if b"d_pwm_outputs" in temp:
@@ -81,14 +91,26 @@ class FILE_TRANSFER(object):
            data = temp[b"a_ad_inputs"]
            self.mess_gen.request_write_file("/spiffs/IO_ADC1.MPK",data)              
 
-  def write_io_input_setup(self):
+  def write_lua_task_configuration(self):
        temp = self.configuration
        
-       if b"d_inputs" in temp:
-           
-          
-           data = temp[b"d_inputs"]
-           self.mess_gen.request_write_file( "/spiffs/IO_INPUT.MPK",data)
+       if b"LUA_TASKS" in temp:
+           data = temp[b"LUA_TASKS"]
+           self.mess_gen.request_write_file("/spiffs/LUA_TASKS.LUA",data)
+
+  def write_lua_files(self):
+       temp = self.configuration
+       
+       if b"LUA_FILES" in temp:
+           data = temp[b"LUA_FILES"]
+           for i in data:
+              f= open("lua_files/"+i)
+              data = f.read()
+              f.close()
+              data = data.encode()
+             
+              self.mess_gen.request_text_write_file("/spiffs/"+i,data)
+              time.sleep(1)
 
   def file_read_callback( self, filename, file_data):
        

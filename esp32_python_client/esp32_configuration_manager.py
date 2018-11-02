@@ -124,3 +124,65 @@ temp[b"a_ad_inputs"]["ANALOG_CHANNELS"] = [ad_conf_0 ,ad_conf_1 ,ad_conf_2 ,ad_c
 #
 temp["com"] = "COM4"
 remote_configuration["PUMP_MONITOR_1"] = temp
+
+
+temp = {}
+temp["mac"] = b'0\xae\xa4\x15\x16l'
+
+temp_wifi = {}
+temp_wifi[b"ssid"] = b"onyx_1_G"
+temp_wifi[b"password"] = b"ready2go"
+temp_wifi[b"hostname"] = b"PI_RESET_1"
+temp[b"wifi"] = temp_wifi
+temp_ibeacon = {}
+temp_ibeacon[b"beacon_name"] = b"esp32_switches  "
+
+temp[b"ibeacon"] = temp_ibeacon
+temp_mqtt = {}
+temp_mqtt[b"PORT"] = 8883
+temp_mqtt[b"HOST"] = b"nano_data_center_demo.fios-router.home"
+temp_mqtt[b"USER_NAME"] = b"pi"
+temp_mqtt[b"PASSWORD"] = b"ready2go"
+temp_mqtt[b"BASE_TOPIC"] = b"REMOTES/PI_RESET_1/"
+temp[b"mqtt"] = temp_mqtt
+
+temp_d_outputs = {}
+temp_d_outputs[b"pins"] = [23,22,21,19,18,5,17,16]
+temp_d_outputs[b"init_values"] = [ 1,1,1,1, 1,1,1,1  ]
+assert len(temp_d_outputs[b"pins"]) == len(temp_d_outputs[b"init_values"])
+
+
+temp[b"d_outputs"] = temp_d_outputs
+
+#
+remote_configuration["PI_RESET_1"] = temp
+
+temp = {}
+temp["mac"] = b'\x80}:\xcf\x0b\xe8'
+
+temp_wifi = {}
+temp_wifi[b"ssid"] = b"onyx_1_G"
+temp_wifi[b"password"] = b"ready2go"
+temp_wifi[b"hostname"] = b"LUA_DEMO"
+temp[b"wifi"] = temp_wifi
+temp_ibeacon = {}
+temp_ibeacon[b"beacon_name"] = b"esp32_switches  "
+
+temp[b"ibeacon"] = temp_ibeacon
+temp_mqtt = {}
+temp_mqtt[b"PORT"] = 8883
+temp_mqtt[b"HOST"] = b"nano_data_center_demo.fios-router.home"
+temp_mqtt[b"USER_NAME"] = b"pi"
+temp_mqtt[b"PASSWORD"] = b"ready2go"
+temp_mqtt[b"BASE_TOPIC"] = b"REMOTES/PUMP_MONITOR_1/"
+temp[b"mqtt"] = temp_mqtt
+
+
+temp_task_1 = {b"LUA_TASK_NAME": b"LUA_TASK_1", b"LUA_TASK_FILE": b"/spiffs/TASK_1.LUA" }
+temp[b"LUA_TASKS"] ={} 
+temp[b"LUA_TASKS"][b"LUA_TASKS"] = [ temp_task_1 ]
+
+temp[b"LUA_FILES"] = [ "TASK_1.LUA", "common.lua"]
+
+temp["com"] = "COM3"
+remote_configuration["LUA_DEMO"] = temp

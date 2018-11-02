@@ -67,7 +67,11 @@ if __name__ == "__main__":
         time.sleep(1)
         file_transfer.write_ad_setup()
         time.sleep(1)
-        
+        file_transfer.write_lua_task_configuration()
+        time.sleep(1)
+        file_transfer.write_lua_files()
+        time.sleep(1)
+        '''
         msg_generator.request_read_file("/spiffs/WIFI.MPK")
         time.sleep(1)
         msg_generator.request_read_file("/spiffs/IBEACON.MPK")
@@ -89,13 +93,19 @@ if __name__ == "__main__":
         time.sleep(1)
         msg_generator.request_read_file( "/spiffs/IO_ADC1.MPK")
         time.sleep(1)
-        
+        '''
+        time.sleep(1)
+        msg_generator.request_read_file( "/spiffs/LUA_TASKS.LUA")
+        time.sleep(1)
+        msg_generator.request_text_read_file( "/spiffs/TASK_1.LUA")
+        time.sleep(1)
+
         msg_generator.request_list_directory("/spiffs/")
         time.sleep(4)         
  
        
-        if file_transfer.verify_data_all() == False or file_transfer.verify_presence() == False:
-            raise
+        #if file_transfer.verify_data_all() == False or file_transfer.verify_presence() == False:
+        #    raise
         time.sleep(1)
         msg_generator.request_reboot()
         time.sleep(15)

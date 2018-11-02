@@ -1,6 +1,7 @@
 import msgpack
 import crcmod
 import binascii
+
 class ESP32_Message_Generator(object):
 
   def __init__(self,transport_handle, topic = None):
@@ -35,6 +36,13 @@ class ESP32_Message_Generator(object):
       request["COMMAND"] = "FILE_WRITE"
       request["DATA"] = {"FILE_NAME":file_name,  "FILE_DATA":data}
       self.send_request(request)
+      
+  def request_text_write_file(self,file_name,data):
+      
+      request = {}
+      request["COMMAND"] = "TEXT_FILE_WRITE"
+      request["DATA"] = {"FILE_NAME":file_name,  "FILE_DATA":data}
+      self.send_request(request)    
 
   def request_read_file(self,file_name):
       request = {}
@@ -42,7 +50,14 @@ class ESP32_Message_Generator(object):
       request["DATA"] = {"FILE_NAME":file_name.encode()}
       
       self.send_request(request)
+ 
+  def request_text_read_file(self,file_name):
+      request = {}
+      request["COMMAND"] = "TEXT_FILE_READ"
+      request["DATA"] = {"FILE_NAME":file_name.encode()}
       
+      self.send_request(request)
+
   def format_spiff_drive(self):
       request = {}
       request["COMMAND"] = "FORMAT_SPIFFS"
