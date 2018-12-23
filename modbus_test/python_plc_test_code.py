@@ -1,31 +1,56 @@
 from modbus_driver.new_instrument_serial import new_instrument
 import sys
+import time
 
 
 
-
+address= int(sys.argv[2])
 instrument = new_instrument(com_port = sys.argv[1])
-x = instrument.read_bits(1, 1, 8)
-print(x)
-x = instrument.write_bits(1, 1, [1,1,1,1,1,1,1,1] )
-print(x)
-x = instrument.read_bits(1, 1, 8)
-print(x)
-x = instrument.write_bits(1, 1, [0,0,0,0] )
-print(x)
-x = instrument.read_bits(1, 1, 8)
-print(x)
-x = instrument.write_bits(1, 1, [0,0,0,0,0,0,0,0] )
-print(x)
-x = instrument.read_bits(1, 1, 8)
-print(x)
-x = instrument.write_bits(1, 1, [1,0,1,0,1,0,1,0] )
-print(x)
-x = instrument.read_bits(1, 1, 8)
+'''
+x = instrument.write_bits(address,0,[1,1,1,1, 1,1,1,1 ,1,1,1,1 ,1,1,1,1] )
+time.sleep(1)
+x = instrument.read_bits(address, 0, 16)
+
 print(x)
 
-x = instrument.read_registers(1, 1, 15)
+for i in range(0,16):
+    instrument.write_bits(address,0,[1,1,1,1, 1,1,1,1 ,1,1,1,1 ,1,1,1,1] )
+    instrument.write_bits(address,i,[0])
+    print(i,instrument.read_bits(address, 0, 16))
+    time.sleep(1)
+instrument.write_bits(address,0,[1,1,1,1, 1,1,1,1 ,1,1,1,1 ,1,1,1,1] )
+'''
+instrument.write_registers(address,0,[0x1000])
+
+instrument.write_registers(address,1,[0x2000])
+
+instrument.write_bits(address,0,[0,0,0,0, 0,0,0,0 ,0,0,0,0 ,0,0,0,0] )
+time.sleep(2)
+
+instrument.write_registers(address,2,[0x3000])
+
+x = instrument.read_registers(address, 0 ,1)
 print(x)
-x = instrument.write_registers(1,1,[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15])
-x = instrument.read_registers(1, 1, 15)
+x = instrument.read_registers(address, 1 ,1)
+print(x)
+x = instrument.read_registers(address, 2 ,1)
+print(x)
+exit()
+time.sleep(1)
+x = instrument.read_registers(address, 0, 1)
+print(x)
+time.sleep(1)
+x = instrument.write_registers(address,1,[0x5555])
+time.sleep(1)
+x = instrument.read_registers(address, 1, 1)
+time.sleep(1)
+print(x)
+x = instrument.write_registers(address,2,[0xaaaa])
+time.sleep(1)
+x = instrument.read_registers(address, 2, 1)
+print(x)
+time.sleep(1)
+x = instrument.write_registers(address,3,[0xaaaa])
+time.sleep(1)
+x = instrument.read_registers(address, 3, 1)
 print(x)

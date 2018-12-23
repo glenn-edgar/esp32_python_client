@@ -126,9 +126,9 @@ class new_instrument:
                         self._numToTwoByteString(registeraddress) + self._numToTwoByteString(register_number)
                         
         message = first_part + self._calculateCrcString(first_part)
-        print("read reg message",message)
+        #print("read reg message",message)
         response = self._communicate(message)
-        print("read reg response",response)
+        #print("read reg response",response)
         crc_flag, return_data = self.check_crc( response )
         if crc_flag != 0:
             return self._twoByteStringToShort(return_data[1:], register_number, signed)

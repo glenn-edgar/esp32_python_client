@@ -28,7 +28,7 @@ if __name__ == "__main__":
    
 
   
-   exit()
+   
    while(1):
     time.sleep(1)
     if esp_serial.packet_recieved == True:

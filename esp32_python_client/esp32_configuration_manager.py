@@ -186,3 +186,15 @@ temp[b"LUA_FILES"] = [ "TASK_1.LUA", "common.lua"]
 
 temp["com"] = "COM3"
 remote_configuration["LUA_DEMO"] = temp
+
+temp = {}
+temp["mac"] =b'0\xae\xa4\xf8\x0bl'
+
+temp_modbus = {}
+temp_modbus[b"RTU_FLAG"] = True
+temp_modbus[b"ADDRESS"] = 121
+temp_modbus[b"BAUD_RATE"] = 38400
+temp_modbus[b"PARITY"] = 0
+temp[b"MODBUS_RELAY"] = temp_modbus
+temp["com"] = "COM4"
+remote_configuration["MODBUS_RELAY"] = temp

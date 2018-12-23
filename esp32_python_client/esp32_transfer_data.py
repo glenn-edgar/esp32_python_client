@@ -71,6 +71,8 @@ if __name__ == "__main__":
         time.sleep(1)
         file_transfer.write_lua_files()
         time.sleep(1)
+        file_transfer.write_modbus_relay()
+        time.sleep(1)
         '''
         msg_generator.request_read_file("/spiffs/WIFI.MPK")
         time.sleep(1)
@@ -93,11 +95,12 @@ if __name__ == "__main__":
         time.sleep(1)
         msg_generator.request_read_file( "/spiffs/IO_ADC1.MPK")
         time.sleep(1)
-        '''
+        
         time.sleep(1)
         msg_generator.request_read_file( "/spiffs/LUA_TASKS.LUA")
         time.sleep(1)
         msg_generator.request_text_read_file( "/spiffs/TASK_1.LUA")
+        '''
         time.sleep(1)
 
         msg_generator.request_list_directory("/spiffs/")

@@ -32,22 +32,28 @@ class FILE_TRANSFER(object):
        transport.file_read_cb = self.file_read_callback       
        
   def write_ibeacon_setup(self):
-       beacon_name = self.configuration[b"ibeacon"][b"beacon_name"]
+       temp = self.configuration
+       if b"ibeacon" in temp:
+           beacon_name = self.configuration[b"ibeacon"][b"beacon_name"]
        
-       print("beacon name",len(beacon_name),beacon_name)
-       assert len(beacon_name) == 16
-       access_dict = {}
-       access_dict["beacon_name"] = beacon_name
-       self.mess_gen.request_write_file(b"/spiffs/IBEACON.MPK",access_dict)
+           print("beacon name",len(beacon_name),beacon_name)
+           assert len(beacon_name) == 16
+           access_dict = {}
+           access_dict["beacon_name"] = beacon_name
+           self.mess_gen.request_write_file(b"/spiffs/IBEACON.MPK",access_dict)
       
   def write_wifi_setup(self):
-       temp = self.configuration[b"wifi"]
-       self.mess_gen.request_write_file(b"/spiffs/WIFI.MPK",temp)
+      temp = self.configuration
+      if b"wifi" in temp:
+          temp = self.configuration[b"wifi"]
+          self.mess_gen.request_write_file(b"/spiffs/WIFI.MPK",temp)
        
        
   def write_mqtt_setup(self):
-       temp = self.configuration[b"mqtt"]
-       self.mess_gen.request_write_file( b"/spiffs/MQTT.MPK",temp)
+       temp = self.configuration
+       if b"mqtt" in temp:
+           temp = self.configuration[b"mqtt"]
+           self.mess_gen.request_write_file( b"/spiffs/MQTT.MPK",temp)
        
   def write_io_output_setup(self):
        temp = self.configuration
@@ -111,6 +117,15 @@ class FILE_TRANSFER(object):
              
               self.mess_gen.request_text_write_file("/spiffs/"+i,data)
               time.sleep(1)
+              
+              
+  def write_modbus_relay(self):
+      temp = self.configuration
+
+      if b"MODBUS_RELAY" in temp:
+     
+           data = temp[b"MODBUS_RELAY"]
+           self.mess_gen.request_write_file("/spiffs/MD_RELAY.MPK",data)          
 
   def file_read_callback( self, filename, file_data):
        
