@@ -34,10 +34,13 @@ class Esp32_Controller_Base_Class(object):
        m_tags["write_wd_flag"]           = self.write_wd_flag
        m_tags["read_input_bit"]          = self.read_input_bit
        self.m_tags = m_tags
-       self.disable_reg                  = 2
-       self.load_duration_reg            = 1
-       self.wd_flag_reg                  = 0
-      
+       self.disable_reg                  = 3
+       self.load_duration_reg            = 2
+       self.wd_flag_reg                  = 1
+       self.wd_flag_reg_rd               = 5
+       self.load_duration_reg_rd         = 6
+       self.reset_reg                    = 4
+       
 
  
        
@@ -74,7 +77,7 @@ class Esp32_Controller_Base_Class(object):
 
    def read_duration_counters( self, modbus_address  ):
         
-        return self.instrument.read_registers(modbus_address,self.load_duration_reg, 1 )
+        return self.instrument.read_registers(modbus_address,self.load_duration_reg_rd, 1 )
 
    def read_input_bit( self, modbus_address, input_list ):
       
@@ -95,13 +98,34 @@ class Esp32_Controller_Base_Class(object):
   
    def read_wd_flag( self, modbus_address ):
       print("wd_flag_reg",self.wd_flag_reg)
-      return self.instrument.read_registers( modbus_address, self.wd_flag_reg,1 )[0]
+      return self.instrument.read_registers( modbus_address, self.wd_flag_reg_rd,1)[0]
       
 
    def write_wd_flag( self, modbus_address ):
       
-      self.instrument.write_registers( modbus_address, self.wd_flag_reg,[1])
+      self.instrument.write_registers( modbus_address, 0,[1])
 
+   def reboot(self, modbus_address):
+       self.instrument.write_registers( modbus_address, self.reset_reg,[1])
+
+
+def iterate( esp32_serial_driver, address, duration ):
+    
+ 
+ 
+   esp32_serial_driver.disable_all_sprinklers( address )
+   
+   print(esp32_serial_driver.read_duration_counters(address))
+   esp32_serial_driver.load_duration_counters(address, [duration]  )
+   time.sleep(.1)
+   print(esp32_serial_driver.read_duration_counters(address))
+   esp32_serial_driver.turn_on_valves(address,[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 ] )
+   
+   for i in range(0,70  ):
+      esp32_serial_driver.turn_on_valves(address,[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 ] )
+      esp32_serial_driver.write_wd_flag(address)
+      print(esp32_serial_driver.read_duration_counters(address))
+      time.sleep(60)
       
 if __name__ == "__main__":
    import sys
@@ -110,24 +134,6 @@ if __name__ == "__main__":
    address= int(sys.argv[2])
    instrument = new_instrument(com_port = sys.argv[1])
    esp32_serial_driver = Esp32_Controller_Base_Class(instrument)
-   esp32_serial_driver.write_wd_flag(address)
-   esp32_serial_driver.disable_all_sprinklers( address )
-   esp32_serial_driver.load_duration_counters(address, [120]  )
-   esp32_serial_driver.turn_on_valves(address,[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 ] )
-   time.sleep(10)
-   #esp32_serial_driver.turn_off_valves(address,[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 ] )
-   #exit()
    while True:
-      esp32_serial_driver.write_wd_flag(address)
-      print(esp32_serial_driver.read_duration_counters(121))
-      time.sleep(30)
-   
-   esp32_serial_driver.disable_all_sprinklers(address)
-   time.sleep(1)
-   esp32_serial_driver.clear_duration_counters(address)
-   time.sleep(1)
-   esp32_serial_driver.write_wd_flag(address)
-   time.sleep(1)
-   print(esp32_serial_driver.read_wd_flag(address))
-    
-  
+       iterate( esp32_serial_driver,address,60*60)
+       exit()
