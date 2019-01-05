@@ -1,0 +1,9 @@
+bitstruct==6.0.0
+colorama==0.3.7
+crcmod==1.7
+msgpack==0.5.6
+paho-mqtt==1.4.0
+pyserial==3.4
+pythonlua==1.0
+PyYAML==3.12
+redis==2.10.6
