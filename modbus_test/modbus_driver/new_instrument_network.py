@@ -15,21 +15,61 @@ import time
 import select
 import socket
 import json
+import redis
+import uuid
+import base64
 
-class new_instrument_network:
+class NO_Modbus_Communication(Exception):
+    pass
+
+class Rpc_No_Communication(Exception):
+   """Base class for rpc server errors"""
+   pass
+class Redis_Rpc_Client(object):
+
+   def __init__( self, redis_handle , redis_rpc_queue ):
+       self.redis_handle = redis_handle
+       self.redis_rpc_queue = redis_rpc_queue
+       
+       
+   def send_rpc_message( self, method,parameters,timeout=30 ):
+        request = {}
+        request["method"] = method
+        request["params"] = parameters
+        request["id"]   = str(uuid.uuid1())    
+        request_json = json.dumps( request )
+        self.redis_handle.delete(request["id"] )
+        self.redis_handle.lpush(self.redis_rpc_queue, request_json)
+        data =  self.redis_handle.brpop(request["id"],timeout = timeout )
+        
+        self.redis_handle.delete(request["id"] )
+        if data == None:
+            raise Rpc_No_Communication("No Communication with Modbus Server")
+        response = json.loads(data[1])
+        
+        return response
+                
+
+
+class Modbus_Instrument:
     
-    def __init__(self ):
-
+    def __init__(self ,ip = "127.0.0.1"):
+    
+        redis_handle = redis.StrictRedis(ip, 6379 ,5,decode_responses = True )
+        self.redis_rpc_client = Redis_Rpc_Client( redis_handle = redis_handle, redis_rpc_queue = "#_RPC_QUEUE_"   )
         self.precalculate_read_size = True
-        self.sock = socket.socket(socket.AF_INET, # Internet
-                          socket.SOCK_DGRAM) # UDP
                           
                           
+
+
+
+
+
+
     #sets the ip and port of udp server
     def set_ip( self,ip ="127.0.0.1", port = 5005 ):
          self.ip    = ip
          self.port  = port
-        
 
 #read_bits
 #Request
@@ -79,19 +119,24 @@ class new_instrument_network:
         
         return_value = []        
         message = first_part + self._calculateCrcString(first_part)
-        response = self._communicate(message)
-    
-        crc_flag, return_data = self.check_crc( response )
-        if crc_flag != 0:
+          
+        return_data = self._communicate(message)
+       
+        return_data = return_data[2:]
+        
+        #crc_flag, return_data = self.check_crc( response )
+        crc_flag = 0
+        if crc_flag == 0:
 
-            byte_count = ord(return_data[0])
+            byte_count = int(return_data[0])
             for i in return_data[1:]:
+                #print(i,bit_number)
                 if bit_number >= 8 :
                     bit_number -= 8
-                    return_value.extend( self.unpack_bits( 8, ord(i) ) )
+                    return_value.extend( self.unpack_bits( 8, int(i) ) )
                 else:
                     
-                    return_value.extend( self.unpack_bits(bit_number, ord(i) ) )
+                    return_value.extend( self.unpack_bits(bit_number, int(i) ) )
                     bit_number = 0
     
         return return_value 
@@ -111,12 +156,13 @@ class new_instrument_network:
 
 
     def write_bits(self, modbus_address, registeraddress, value, functioncode=15):
+        
         number_of_bits = len( value )
         
         bit_data = ""
          # pack bit fields in word array
         # use pack to pact into network string
-        loop_count = number_of_bits/8
+        loop_count = int(number_of_bits/8)
         if (number_of_bits % 8) != 0:
              loop_count += 1
  
@@ -130,15 +176,19 @@ class new_instrument_network:
              
         
         payloadToSlave =  self._numToOneByteString(modbus_address ) + self._numToOneByteString(functioncode) + \
-                          self._numToTwoByteString(registeraddress) + self._numToTwoByteString(number_of_bits) + self._numToOneByteString( loop_count ) +bit_data
+                          self._numToTwoByteString(registeraddress) + self._numToTwoByteString(number_of_bits) +\
+                          self._numToOneByteString( loop_count ) +bit_data.encode()
         message = payloadToSlave + self._calculateCrcString(payloadToSlave)
+        
         response = self._communicate(message)
-        crc_flag, return_data = self.check_crc( response )
-        if crc_flag != 0:
+        
+        #crc_flag, return_data = self.check_crc( response )
+        crc_flag = 0
+        if crc_flag == 0:
                 pass
         else:
                  raise
-           
+         
         return 
 
 #Request
@@ -156,9 +206,13 @@ class new_instrument_network:
                         self._numToTwoByteString(registeraddress) + self._numToTwoByteString(register_number)
                         
         message = first_part + self._calculateCrcString(first_part)
-        response = self._communicate(message)
-        crc_flag, return_data = self.check_crc( response )
-        if crc_flag != 0:
+        return_data = self._communicate(message)
+        return_data = return_data[2:]
+        crc_flag = 0
+        
+        #crc_flag, return_data = self.check_crc( response )
+        if crc_flag == 0:
+            #print(len(return_data[1:]),return_data[1:])
             return self._twoByteStringToShort(return_data[1:], register_number, signed)
 
 #Request
@@ -186,6 +240,7 @@ class new_instrument_network:
 
 
     def write_registers(self, modbus_address, registeraddress, value, functioncode=16, signed=False):
+
         register_number = len(value)
         first_part  = self._numToOneByteString(modbus_address) + self._numToOneByteString(functioncode) + \
                         self._numToTwoByteString(registeraddress) + self._numToTwoByteString(register_number) +\
@@ -195,7 +250,7 @@ class new_instrument_network:
                         
         message = first_part + self._calculateCrcString(first_part)
         response = self._communicate(message)
-        crc_flag, return_data = self.check_crc( response )
+        #crc_flag, return_data = self.check_crc( response )
 
 
  
@@ -215,8 +270,9 @@ class new_instrument_network:
                         self._numToTwoByteString(registeraddress) + self._numToTwoByteString(register_number*2)
                         
         message = first_part + self._calculateCrcString(first_part)
-        response = self._communicate(message)
-        crc_flag, return_data = self.check_crc( response )
+        return_data = self._communicate(message)
+        #crc_flag, return_data = self.check_crc( response )
+        crc_flag = 0
         if crc_flag != 0:
             return self._bytestringToLong(return_data[1:], register_number, signed)
 
@@ -250,9 +306,11 @@ class new_instrument_network:
                         self._numToTwoByteString(registeraddress) + self._numToTwoByteString(register_number*2)
                         
         message = first_part + self._calculateCrcString(first_part)
-        response = self._communicate(message)
-        crc_flag, return_data = self.check_crc( response )
-        if crc_flag != 0:
+        return_data = self._communicate(message)
+        return_data = return_data[2:]
+        #crc_flag, return_data = self.check_crc( response )
+        crc_flag = 0
+        if crc_flag == 0:
             return self._bytestringToFloat(return_data[1:], register_number)
 
     def write_floats(self, modbus_address, registeraddress, value, functioncode = 16):
@@ -265,7 +323,7 @@ class new_instrument_network:
                         
         message = first_part + self._calculateCrcString(first_part)
         response = self._communicate(message)
-        crc_flag, return_data = self.check_crc( response )
+        #crc_flag, return_data = self.check_crc( response )
    
     
 
@@ -321,27 +379,33 @@ class new_instrument_network:
 
        
 
-    
+    '''
     def _communicate(self, message, number_of_bytes_to_read= 1024):
-         
-        print "made it here", self.ip, self.port
-        self.sock.sendto(message, (self.ip, self.port))        
 
-
-        
-        self.sock.setblocking(0)
-        ready = select.select([self.sock], [], [], 5.0)
-        answer = ""
-        if ready[0]:
-            data = self.sock.recvfrom(1024)
-            answer = data[0]
+       for i in range(0,1):
+           #print( "_comm i",i)
+           self.sock.sendto(message, (self.ip, self.port))        
+           self.sock.setblocking(0)
+           ready = select.select([self.sock], [], [], 30.0)
+           answer = ""
+           if ready[0]:
+               data = self.sock.recvfrom(1024)
+               answer = data[0]
             
-        if len(answer) == 0:
-            print "no communication with the instrument"
-            raise IOError('No communication with the instrument (no answer)')
-
-        return answer
-
+           if len(answer) > 1:
+              return answer
+           
+       print( "no communication with the instrument")
+       raise IOError('No communication with the instrument (no answer)')
+    '''
+    def _communicate(self, message, number_of_bytes_to_read= 1024):
+        message = base64.b64encode(message).decode()
+        return_value = self.redis_rpc_client.send_rpc_message( "modbus_relay",message,timeout=30 )
+        return_value = base64.b64decode(return_value)
+        if len(return_value) < 4:
+            raise NO_Modbus_Communication
+        return_value = return_value[:-2]
+        return return_value
 
     def check_crc( self, response ):
          receivedChecksum = response[-2:]
@@ -358,7 +422,7 @@ class new_instrument_network:
 
       for character in inputstring:
         # XOR with each character
-        register = self._XOR(register, ord(character))
+        register = self._XOR(register, int.from_bytes([character],byteorder='little'))
 
         # Rightshift 8 times, and XOR with polynom if carry overflows
         for i in range(8):
@@ -398,16 +462,16 @@ class new_instrument_network:
        
         outstring = struct.pack(formatcode, int(value)&0xffff )
 
+
         assert len(outstring) == 2
         return outstring
         
         
     def _numToOneByteString( self,inputvalue):
-         return chr(inputvalue)
+         return bytes([inputvalue])
          
           
     def _twoByteStringToShort(self,bytestring, numberOfRegisters, signed=False):
-
         formatcode = '>'  # BIG-end
         for i in range(0,numberOfRegisters):
              if signed:
@@ -432,7 +496,7 @@ class new_instrument_network:
               formatcode += 'L'  # Unsigned long (4 bytes)
               
       temp_list    = self._twoByteStringToShort( bytestring, numberOfRegisters*2, signed=False)
-      print "temp_list",temp_list
+      #print( "temp_list",temp_list)
       temp_string  = struct.pack(packcode,*temp_list )
       return list(struct.unpack(formatcode, temp_string ))
 
@@ -524,8 +588,9 @@ class new_instrument_network:
                 return_value.append( 1)
             else:
                  return_value.append(0)
+            #print(k&bit_data,i,k)
             k = k + k
- 
+        
         return return_value
 
     def pack_bits( self, bit_array ):
@@ -535,9 +600,10 @@ class new_instrument_network:
         for i in range( 0,len(bit_array) ):
             if  bit_array[i] > 0:
                 return_value |= k
-        
+            #print("bit_array",bit_array[i],k,return_value)
             k = k + k
- 
+            
+        #print("ew",return_value)
         return return_value
         
             
@@ -545,60 +611,26 @@ if __name__ == "__main__":
     #
     # Remove window fire wall before running this test
     #
-    instrument = new_instrument_network()
-    instrument.set_ip("192.168.1.82",5005)
-    print instrument.read_bits( 100, 0x4063, 7 ,  functioncode=1)
-    print instrument.write_bits( 100, 0x4063,  value = [ 1,1,0,0,0,0,0,1,1] ,functioncode=15)   
-    print instrument.read_bits( 100, 0x4063, 15 ,  functioncode=1)   
-    print instrument.write_bits( 100, 0x4063,   value = [ 0,0,0,0,0,0,0,0,0,0] ,functioncode=15)   
-    print instrument.read_bits( 100, 0x4063, 15 ,  functioncode=1)   
+    instrument = Modbus_Instrument(ip="192.168.1.84")
+    instrument.set_ip("192.168.1.84",5005)
+    
+    for i in range(0,1):
+        print( instrument.read_bits( 100, 0x4063, 50 ,  functioncode=1))
+    
+    print( instrument.write_bits( 100, 0x4063,  value = [ 1,1,1,1, 0,0,0,0, 1,1,0] ,functioncode=15))   
+    print( instrument.read_bits( 100, 0x4063, 11 ,  functioncode=1)   )
+    print( instrument.write_bits( 100, 0x4063,   value = [ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] ,functioncode=15))   
+    print( instrument.read_bits( 100, 0x4063, 16 ,  functioncode=1) ) 
+    
+    for i in range(0,1):
+         #
+         print( instrument.write_registers( modbus_address=100, registeraddress = 20, functioncode = 16,value=[ 10,20,30,40,50,60,70,80,90,100] ))
+         print( instrument.read_registers( modbus_address=100, registeraddress=20, register_number=10, functioncode = 3))
+         time.sleep(1)
+         #print( instrument.write_registers( modbus_address=100, registeraddress = 20, functioncode = 16,value=[ 0,0,0,0,0,0,0,0,0,0] ))
+         print( instrument.read_registers( modbus_address=100, registeraddress=1, register_number=10, functioncode=3, signed=False))
+    print( instrument.read_bits( 100, 61449, 10, functioncode = 2 ))
+    print( instrument.read_floats(100, 0x7000, 2, functioncode=3) )
+    print( instrument.read_registers( modbus_address=121, registeraddress = 0, register_number=3, functioncode = 3 ))
 
-    print instrument.read_registers( modbus_address=100, registeraddress = 20, register_number=10, functioncode = 3 )
-    print instrument.write_registers( modbus_address=100, registeraddress = 20, functioncode = 16,value=[ 10,20,30,40,50,60,70,80,90,100] )
-    print instrument.read_registers( modbus_address=100, registeraddress=20, register_number=10, functioncode = 3)
-    print instrument.write_registers( modbus_address=100, registeraddress = 20, functioncode = 16,value=[ 0,0,0,0,0,0,0,0,0,0] )
-    print instrument.read_registers( modbus_address=100, registeraddress=1, register_number=10, functioncode=3, signed=False)
-    print instrument.read_bits( 100, 61449, 1, functioncode = 2 )
-	
     quit()
-    #instrument.set_ip()
-    #print  instrument.redis_write( {"test1":123,"test2":124 } )
-    #print  instrument.redis_read(["test1","test2"] )
-    #print  instrument.redis_write( {"test1":34,"test2":35 } )
-    #print  instrument.redis_read(["test1","test2"] )
-    #print instrument.ping_device( [31] )
-    #print instrument.ping_all_devices(  )
-
-    #print instrument.get_all_counters(  )
-    #print instrument.clear_all_counters( )
-    #print instrument.clear_counter_list( [31] )
-    #print instrument.get_all_counters(  )
-    #print instrument.read_fifo( 31, 0  )
-    
-    #print instrument.read_registers( modbus_address=31, registeraddress = 20, register_number=10, functioncode = 34 )
-    #print instrument.write_registers( modbus_address=31, registeraddress = 20, functioncode = 35,value=[ 10,20,30,40,50,60,70,80,90,100] )
-    #print instrument.read_registers( modbus_address=31, registeraddress=20, register_number=10, functioncode = 34 )
-    
-
-    #quit()
-    instrument.set_ip()
-    for i in range( 0, 1):
-        print instrument.read_registers( modbus_address=31, registeraddress=1, register_number=10, functioncode=3, signed=False)
-        print instrument.read_registers( modbus_address=31, registeraddress=10, register_number=1, functioncode=3, signed=False)
-        print instrument.read_registers( modbus_address=31, registeraddress=11, register_number=3, functioncode=3, signed=False)
-        print instrument.read_longs( modbus_address=31,registeraddress=20,register_number=2,functioncode = 3, signed=True )
-        print instrument.read_longs( modbus_address=31,registeraddress=21,register_number=2,functioncode = 3, signed=True )
-        print instrument.read_longs( modbus_address=31,registeraddress=22,register_number=2,functioncode = 3, signed=True )
-        print instrument.read_longs( modbus_address=31,registeraddress=23,register_number=2,functioncode = 3, signed=True )
-        print instrument.read_longs( modbus_address=31,registeraddress=30,register_number=3,functioncode = 3, signed=True )
-        print instrument.read_longs( modbus_address=31,registeraddress=31,register_number=3,functioncode = 3, signed=True )
-        print instrument.read_longs( modbus_address=31,registeraddress=32,register_number=3,functioncode = 3, signed=True )
-        print instrument.read_longs( modbus_address=31,registeraddress=33,register_number=3,functioncode = 3, signed=True )
-        print instrument.read_floats( modbus_address=31,registeraddress=40,register_number=2,functioncode = 3 )
-        print instrument.read_registers( modbus_address=31, registeraddress=11, register_number=3, functioncode=3, signed=False)
-        print instrument.write_registers( modbus_address=31, registeraddress = 20,  functioncode = 16, signed = False , value = [ 0x0303,0x0303,2016 ] )
-        print instrument.read_registers( modbus_address=31, registeraddress=11, register_number=3, functioncode=3, signed=False)
-        print instrument.write_floats( modbus_address=31, registeraddress= 40, functioncode=16, value = [2.34] )
-        print instrument.write_longs( modbus_address=31, registeraddress=30, functioncode=16, value = [0xa5a55a5a])
-        
-    
