@@ -8,10 +8,9 @@ class ESP32_Message_Generator(object):
         
 
         
-   def read_gpio_pins(self,gpio_pins):
+   def read_gpio_pins(self):
       request = {}
-      request["pins"] = gpio_pins
-      request["topic"] = "INPUT/GPIO/READ"
+      request["topic"] = "OUTPUTS/GPIO/GET"
       self.send_request(request)      
 
    def write_gpio_pins(self,gpio_pins,values):
@@ -19,7 +18,7 @@ class ESP32_Message_Generator(object):
       request = {}
       request["pins"] = gpio_pins
       request["topic"] = "OUTPUTS/GPIO/SET"
-      request["init_values"] = values
+      request["values"] = values
       self.send_request(request)      
 
 

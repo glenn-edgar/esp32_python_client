@@ -59,7 +59,7 @@ class FILE_TRANSFER(object):
        temp = self.configuration
        
        if b"d_outputs" in temp:
-
+           
            data = temp[b"d_outputs"]
            self.mess_gen.request_write_file( "/spiffs/IO_OUT.MPK",data)
            
@@ -71,7 +71,15 @@ class FILE_TRANSFER(object):
 
            data = temp[b"d_inputs"]
            self.mess_gen.request_write_file( "/spiffs/IO_INPUT.MPK",data)
-          
+ 
+  def write_current_monitor(self):
+       
+       temp = self.configuration
+       if b"d_current_monitor" in temp:
+           
+           data = temp[b"d_current_monitor"]
+           self.mess_gen.request_write_file( "/spiffs/MQTT_CUR.MPK",data)
+ 
            
   def write_pwm_setup(self):
        tenp = self.configuration
@@ -92,8 +100,10 @@ class FILE_TRANSFER(object):
            self.mess_gen.request_write_file("/spiffs/IO_DAC.MPK",data)
            
   def write_ad_setup(self):
-       tenp = self.configuration
+       
+       temp = self.configuration
        if b"a_ad_inputs" in temp:
+           print("madeit toa a/d")
            data = temp[b"a_ad_inputs"]
            self.mess_gen.request_write_file("/spiffs/IO_ADC1.MPK",data)              
 

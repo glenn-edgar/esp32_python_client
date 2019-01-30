@@ -10,13 +10,16 @@ from threading import Thread
 
 class Serial_Port_Manager(object):
    def __init__(self,comm_port):
+       print("make it here")
        self.packet_recieved = False
        self.comm_port = comm_port
        self.stop_flag = False
        self.mac_cb = None
        self.file_read_cb = None   
+       
        self.open()
        self.start()
+       
        
    def get_packet_recieved(self):
        return self.packet_recieved
@@ -26,6 +29,7 @@ class Serial_Port_Manager(object):
 
        
    def open( self):
+       
        self.crc16 = crcmod.mkCrcFun(	0x11021, 0xffff, False, 0)
        ser = serial.Serial(
                         port=self.comm_port,
@@ -54,16 +58,18 @@ class Serial_Port_Manager(object):
        
       
    def read_packet(self):
-       
+        
         packet =[]
         
         x = b''
         while len(x) < 3 :
           if self.stop_flag == True:
               break
+         
           x = self.handle.readline()
+          
         
-   
+        
         return x[:-2]
  
 
@@ -122,6 +128,7 @@ class Serial_Port_Manager(object):
     
  
    def read_control(self):
+       
        while(True):
           if self.stop_flag == True:
               break

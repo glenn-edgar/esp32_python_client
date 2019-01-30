@@ -31,6 +31,8 @@ class MQTT_CLIENT(object):
        client.on_connect = self.on_connect
        client.on_message = self.on_message
        client.username_pw_set(self.username,self.password)
+       print("$$$$$$$$$$$",self.username,self.password)
+       print("$$$$$$$$$$$",self.ip,self.port)
        client.connect(self.ip,self.port, 60)
        client.loop_forever()
        

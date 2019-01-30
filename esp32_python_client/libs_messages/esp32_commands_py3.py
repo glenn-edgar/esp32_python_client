@@ -8,6 +8,7 @@ class ESP32_Message_Generator(object):
         self.transport_handler = transport_handle
         self.crc16 = crcmod.mkCrcFun(	0x11021, 0xffff, False, 0)
         self.topic = topic
+        
 
         
   def request_wifi_mac(self):

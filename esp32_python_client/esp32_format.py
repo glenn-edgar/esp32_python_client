@@ -16,7 +16,7 @@ from threading import Thread
 
 def instanciate_transport(configuration_data):
     length  = len(sys.argv)
-    print("usaage  serial config_name, port")
+    print("usage  serial config_name, port")
     assert length > 1
     if sys.argv[1] == "serial":
          assert length > 3 

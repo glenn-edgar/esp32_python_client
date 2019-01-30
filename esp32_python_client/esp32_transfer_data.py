@@ -29,6 +29,8 @@ if __name__ == "__main__":
    configuration, transport = instanciate_transport(remote_configuration )
 
    msg_generator = ESP32_Message_Generator(transport)
+   print(configuration.keys())
+  
    file_transfer = FILE_TRANSFER( transport,configuration )
 
    print("starting thread \n")
@@ -65,7 +67,9 @@ if __name__ == "__main__":
         time.sleep(1)
         file_transfer.write_dac_setup()
         time.sleep(1)
+        
         file_transfer.write_ad_setup()
+        
         time.sleep(1)
         file_transfer.write_lua_task_configuration()
         time.sleep(1)
@@ -73,6 +77,8 @@ if __name__ == "__main__":
         time.sleep(1)
         file_transfer.write_modbus_relay()
         time.sleep(1)
+        file_transfer.write_current_monitor()
+
         '''
         msg_generator.request_read_file("/spiffs/WIFI.MPK")
         time.sleep(1)
