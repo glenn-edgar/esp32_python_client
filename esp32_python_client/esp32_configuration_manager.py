@@ -19,7 +19,7 @@ remote_configuration = {}
 
 
 temp = {}
-temp["mac"] = b'0\xae\xa4\x18\th'
+temp["mac"] = b'0\xae\xa4\x90\xc0\xc4'
 temp_wifi = {}
 temp_wifi[b"ssid"] = b"onyx_4_G"
 temp_wifi[b"password"] = b"ready2go"
@@ -31,21 +31,21 @@ temp_ibeacon[b"beacon_name"] = b"esp32_current_1 "
 temp[b"ibeacon"] = temp_ibeacon
 temp_mqtt = {}
 temp_mqtt[b"PORT"] = 8883
-temp_mqtt[b"HOST"] = b"nano_data_center_demo.fios-router.home"
+temp_mqtt[b"HOST"] = b"farm_control.fios-router.home"
 temp_mqtt[b"USER_NAME"] = b"pi"
 temp_mqtt[b"PASSWORD"] = b"ready2go"
-temp_mqtt[b"BASE_TOPIC"] = b"CURRENT_MONITOR_1"
+temp_mqtt[b"BASE_TOPIC"] = b"/REMOTES/CURRENT_MONITOR_1/"
 temp[b"mqtt"] = temp_mqtt
 
 
 temp[b"d_current_monitor"] = {}
-temp[b"d_current_monitor"][b"max_current_equipment"] = 1.5
-temp[b"d_current_monitor"][b"max_current_irrigation"] =2.0
+temp[b"d_current_monitor"][b"max_current_equipment"] = 4.0
+temp[b"d_current_monitor"][b"max_current_irrigation"] =4.0
 temp[b"a_ad_inputs"] = {}
 ad_conf_0 = { "attenuation":3, "channel":0 }  
 ad_conf_1 = { "attenuation":3, "channel":3 }  
 temp[b"a_ad_inputs"]["ANALOG_CHANNELS"] = [ad_conf_0 ,ad_conf_1 ]
-temp["com"] = "COM5"
+temp["com"] = "COM4"
 #
 remote_configuration["CURRENT_MONITOR_1"] = temp
 

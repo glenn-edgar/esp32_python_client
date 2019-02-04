@@ -44,8 +44,8 @@ class MQTT_CLIENT(object):
 
    # The callback for when a PUBLISH message is received from the server.
    def on_message(self, client, userdata, msg):
-       print(msg.topic,msg.payload)
-       print(msg.topic, msgpack.unpackb(msg.payload))
+       #print("input raw ------------>",msg.topic,msg.payload)
+       print("input decoded -------->",msg.topic, msgpack.unpackb(msg.payload))
        
    def publish(self,topic,payload):
       if self.is_connected_flag == True:

@@ -7,6 +7,7 @@ import json
 import crcmod
 import paho.mqtt.client as mqtt
 import ssl
+from libs_messages.esp32_file_write import FILE_TRANSFER
 from libs_messages.esp32_commands_py3 import ESP32_Message_Generator
 from esp32_configuration_manager import *
 
@@ -22,7 +23,7 @@ class MQTT_TX_TRANSPORT(object):
 
     def write_packet(self,payload,topic):
         temp = msgpack.unpackb(payload)
-        print("$$$$$$$$$$$$$$$$$$$$$$$$$",self.tx_topic,topic, payload)
+        #print("$$$$$$$$$$$$$$$$$$$$$$$$$",self.tx_topic,topic, payload)
         
         self.mqtt_class.publish(self.tx_topic+topic,payload)
 
@@ -49,6 +50,7 @@ if __name__ == "__main__":
     topic = remote_configuration[sys.argv[1]][b"mqtt"][b"BASE_TOPIC"].decode()
     transport = MQTT_TX_TRANSPORT(mqtt_class,topic)
     msg_generator = ESP32_Message_Generator(transport,"BUILT_IN_CMD")
+    file_write = FILE_TRANSFER(transport,remote_configuration[sys.argv[1]])
     mqtt_class.start()
     while mqtt_class.is_connected() == False:
         time.sleep(1)
@@ -60,3 +62,4 @@ if __name__ == "__main__":
     msg_generator.request_heap_space()
     time.sleep(2)
     msg_generator.request_list_directory("/spiffs/")
+    file_write.write_current_monitor()
