@@ -15,8 +15,11 @@ from threading import Thread
 
 class FILE_TRANSFER(object):
 
-  def __init__(self,transport, configuration):
-       self.mess_gen = ESP32_Message_Generator(transport)
+  def __init__(self,transport, configuration,mess_gen = None):
+       if mess_gen == None:
+            self.mess_gen = ESP32_Message_Generator(transport)
+       else:
+           self.mess_gen = mess_gen
        self.configuration = configuration
        self.present = {}
        self.present[b"ibeacon"] = False

@@ -39,7 +39,7 @@ temp[b"mqtt"] = temp_mqtt
 
 
 temp[b"d_current_monitor"] = {}
-temp[b"d_current_monitor"][b"max_current_equipment"] = 4.0
+temp[b"d_current_monitor"][b"max_current_equipment"] =4.0
 temp[b"d_current_monitor"][b"max_current_irrigation"] =4.0
 temp[b"a_ad_inputs"] = {}
 ad_conf_0 = { "attenuation":3, "channel":0 }  

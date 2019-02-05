@@ -50,7 +50,7 @@ if __name__ == "__main__":
     topic = remote_configuration[sys.argv[1]][b"mqtt"][b"BASE_TOPIC"].decode()
     transport = MQTT_TX_TRANSPORT(mqtt_class,topic)
     msg_generator = ESP32_Message_Generator(transport,"BUILT_IN_CMD")
-    file_write = FILE_TRANSFER(transport,remote_configuration[sys.argv[1]])
+    file_write = FILE_TRANSFER(transport,remote_configuration[sys.argv[1]],msg_generator)
     mqtt_class.start()
     while mqtt_class.is_connected() == False:
         time.sleep(1)
@@ -63,3 +63,9 @@ if __name__ == "__main__":
     time.sleep(2)
     msg_generator.request_list_directory("/spiffs/")
     file_write.write_current_monitor()
+    time.sleep(2)
+    print("#########################")
+    msg_generator.request_read_file("/spiffs/MQTT_CUR.MPK")
+    time.sleep(3)
+    print("reboot")
+    msg_generator.request_reboot()

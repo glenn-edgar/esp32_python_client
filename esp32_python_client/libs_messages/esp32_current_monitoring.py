@@ -5,7 +5,11 @@ class ESP32_MQTT_Current_Message_Generator(object):
    def __init__(self,transport_handle):
         self.transport_handler = transport_handle
         
-
+   def  read_current_limit(self):
+      request = {}
+      request["topic"] = "INPUT/MQTT_CURRENT/GET_LIMIT_CURRENTS"
+      self.send_request(request)   
+ 
    def read_max_currents(self):
       request = {}
       request["topic"] = "INPUT/MQTT_CURRENT/GET_MAX_CURRENTS"

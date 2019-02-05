@@ -41,28 +41,47 @@ if __name__ == "__main__":
     while mqtt_class.is_connected() == False:
         time.sleep(1)
     while(1):
-        value = int(input())
-        
+        try:
+            temp = input()
+            value = int(temp)
+        except:
+            value = temp
+            
+            
+        if value == 'm':
+           print("option 0 /REMOTES/CURRENT_MONITOR_1/INPUT/MQTT_CURRENT/GET_LIMIT_CURRENTS")
+           print("option 1/REMOTES/CURRENT_MONITOR_1/INPUT/MQTT_CURRENT/GET_MAX_CURRENTS")
+           print("option 2  /REMOTES/CURRENT_MONITOR_1/INPUT/MQTT_CURRENT/CLEAR_MAX_CURRENTS")
+           print("option 3  /REMOTES/CURRENT_MONITOR_1/INPUT/MQTT_CURRENT/READ_CURRENT")
+           print("option 4  /REMOTES/CURRENT_MONITOR_1/OUTPUT/MQTT_CURRENT/ENABLE_EQUIPMENT_RELAY")
+           print("option 5  /REMOTES/CURRENT_MONITOR_1/OUTPUT/MQTT_CURRENT/ENABLE_IRRIGATION_RELAY")
+           print("option 6  /REMOTES/CURRENT_MONITOR_1/OUTPUT/MQTT_CURRENT/DISABLE_EQUIPMENT_RELAY")
+           print("option 7  /REMOTES/CURRENT_MONITOR_1/OUTPUT/MQTT_CURRENT/DISABLE_IRRIGATION_RELAY")
+           print("option 8 /REMOTES/CURRENT_MONITOR_1/OUTPUT/MQTT_CURRENT/READ_RELAY_STATES")
+
         if value == 0:
-            mqtt_message.read_max_currents()
+            mqtt_message.read_current_limit()
 
         if value == 1:
+            mqtt_message.read_max_currents()
+
+        if value == 2:
             mqtt_message.clear_max_currents( )           
             
-        if value == 2:
+        if value == 3:
             mqtt_message.read_current()
 
-        if value == 3:
+        if value == 4:
             mqtt_message.enable_equipment_relay()   
             
-        if value == 4:
+        if value == 5:
             mqtt_message.enable_irrigation_relay()
 
-        if value == 5:
+        if value == 6:
             mqtt_message.disable_equipment_relay()            
             
-        if value == 6:
+        if value == 7:
             mqtt_message.disable_irrigation_irrigation()
 
-        if value == 7:
+        if value == 8:
             mqtt_message.read_relay_states()               
