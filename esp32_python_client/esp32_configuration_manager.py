@@ -19,6 +19,45 @@ remote_configuration = {}
 
 
 temp = {}
+temp["mac"] = b'0\xae\xa4\xd3\x85\xec'
+temp_wifi = {}
+temp_wifi[b"ssid"] = b"onyx_4_G"
+temp_wifi[b"password"] = b"ready2go"
+temp_wifi[b"hostname"] = b"GARAGE_MONITOR_1"
+temp[b"wifi"] = temp_wifi
+temp_ibeacon = {}
+temp_ibeacon[b"beacon_name"] = b"esp32_current_1 "
+
+temp[b"ibeacon"] = temp_ibeacon
+temp_mqtt = {}
+temp_mqtt[b"PORT"] = 8883
+temp_mqtt[b"HOST"] = b"farm_control.fios-router.home"
+temp_mqtt[b"USER_NAME"] = b"pi"
+temp_mqtt[b"PASSWORD"] = b"ready2go"
+temp_mqtt[b"BASE_TOPIC"] = b"/REMOTES/GARAGE_MONITOR_1"
+temp[b"mqtt"] = temp_mqtt
+
+
+temp_d_outputs = {}
+temp_d_outputs[b"pins"] = [25,26,27]
+temp_d_outputs[b"init_values"] = [ 0,0,0 ]
+#print(len(temp_d_outputs[b"pins"]) ,len(temp_d_outputs[b"init_values"]))
+assert len(temp_d_outputs[b"pins"]) == len(temp_d_outputs[b"init_values"])
+temp[b"d_outputs"] = temp_d_outputs
+temp_d_inputs = {}
+temp_d_inputs[b"pins"] = [23,22,19,18]
+temp_d_inputs[b"pullup"] = [ pull_up,pull_up,pull_up,pull_up ]
+assert len(temp_d_inputs[b"pins"]) == len(temp_d_inputs[b"pullup"])
+temp_d_inputs[b"debounce"] = 2
+
+temp[b"d_inputs"] = temp_d_inputs
+
+temp[b"d_outputs"] = temp_d_outputs
+temp["com"] = "COM4"
+#
+remote_configuration["GARAGE_MONITOR_1"] = temp
+
+temp = {}
 temp["mac"] = b'0\xae\xa4\x90\xc0\xc4'
 temp_wifi = {}
 temp_wifi[b"ssid"] = b"onyx_4_G"
@@ -39,8 +78,8 @@ temp[b"mqtt"] = temp_mqtt
 
 
 temp[b"d_current_monitor"] = {}
-temp[b"d_current_monitor"][b"max_current_equipment"] =4.0
-temp[b"d_current_monitor"][b"max_current_irrigation"] =4.0
+temp[b"d_current_monitor"][b"max_current_equipment"] = 4.0
+temp[b"d_current_monitor"][b"max_current_irrigation"] = 4.0
 temp[b"a_ad_inputs"] = {}
 ad_conf_0 = { "attenuation":3, "channel":0 }  
 ad_conf_1 = { "attenuation":3, "channel":3 }  
@@ -48,8 +87,6 @@ temp[b"a_ad_inputs"]["ANALOG_CHANNELS"] = [ad_conf_0 ,ad_conf_1 ]
 temp["com"] = "COM4"
 #
 remote_configuration["CURRENT_MONITOR_1"] = temp
-
-
 
 
 

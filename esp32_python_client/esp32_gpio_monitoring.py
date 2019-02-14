@@ -1,3 +1,16 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
 import sys
 import msgpack
 import binascii
@@ -42,9 +55,9 @@ if __name__ == "__main__":
         time.sleep(1)
     print("mqtt is connectoed")
     #gpio_message.read_gpio_pins([])
-    gpio_message.write_gpio_pins([14,12],[0,1])
-    time.sleep(2)
-    gpio_message.write_gpio_pins([14,12],[1,0])
+    gpio_message.write_gpio_pins([25,26,27],[1,1,1])
+    time.sleep(5)
+    gpio_message.write_gpio_pins([25,26,27],[0,0,0])
     time.sleep(2)
     print(gpio_message.read_gpio_pins())
     #gpio_message.write_gpio_pulse(23,1,0,300)
