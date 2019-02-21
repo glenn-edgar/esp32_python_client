@@ -85,14 +85,17 @@ class FILE_TRANSFER(object):
  
            
   def write_pwm_setup(self):
-       tenp = self.configuration
+       temp = self.configuration
        if b"d_pwm_outputs" in temp:
            data = temp[b"d_pwm_outputs"]
            self.mess_gen.request_write_file( "/spiffs/IO_PWM.MPK",data)
 
   def write_counter_setup(self):
-       tenp = self.configuration
+       print("made it here")
+       temp = self.configuration
+
        if b"d_counter_inputs" in temp:
+           print("writing counter data")
            data = temp[b"d_counter_inputs"]
            self.mess_gen.request_write_file( "/spiffs/IO_PULSE.MPK",data)   
            

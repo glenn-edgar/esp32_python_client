@@ -18,6 +18,51 @@ remote_configuration = {}
 
 
 
+
+
+temp = {}
+temp["mac"] =  b'0\xae\xa4\xd3\x1d\x8c'
+temp_wifi = {}
+temp_wifi[b"ssid"] = b"onyx_4_G"
+temp_wifi[b"password"] = b"ready2go"
+temp_wifi[b"hostname"] = b"WELL_MONITOR_1"
+temp[b"wifi"] = temp_wifi
+temp_ibeacon = {}
+temp_ibeacon[b"beacon_name"] = b"esp32_current_1 "
+
+temp[b"ibeacon"] = temp_ibeacon
+temp_mqtt = {}
+temp_mqtt[b"PORT"] = 8883
+temp_mqtt[b"HOST"] = b"farm_control.fios-router.home"
+temp_mqtt[b"USER_NAME"] = b"pi"
+temp_mqtt[b"PASSWORD"] = b"ready2go"
+temp_mqtt[b"BASE_TOPIC"] = b"/REMOTES/WELL_MONITOR_1"
+temp[b"mqtt"] = temp_mqtt
+
+
+ad_conf_0 = { "attenuation":3, "channel":0 }  
+ad_conf_1 = { "attenuation":3, "channel":3 }  
+ad_conf_2 = { "attenuation":3, "channel":6 }  
+ad_conf_3 = { "attenuation":3, "channel":7 }  
+ad_conf_4 = { "attenuation":3, "channel":4 }  
+temp[b"a_ad_inputs"] = {}
+temp[b"a_ad_inputs"]["ANALOG_CHANNELS"] = [ad_conf_0 ,ad_conf_1,ad_conf_2,ad_conf_3,ad_conf_4 ]
+
+
+
+
+temp[b"d_counter_inputs"] = {}
+temp[b"d_counter_inputs"][b"COUNTER_UPDATE_RATE"] = 15
+temp[b"d_counter_inputs"][b"COUNTER_FILTER_COUNT"] = 10
+temp[b"d_counter_inputs"][b"GPIO_PINS"] = [27,14,12]
+temp[b"d_pwm_outputs"] = {}
+pwm_conf_1 = { "duty_a": 50. , "duty_b": 50., "frequency": 100, "pin_a": 19, "pin_b":18 }  
+pwm_conf_2 = { "duty_a": 50. , "duty_b": 50., "frequency": 100, "pin_a": 5, "pin_b":17}  
+temp[b"d_pwm_outputs"]["PWM_OUTPUTS"] = [pwm_conf_1,pwm_conf_2]
+
+temp["com"] = "COM4"
+remote_configuration["WELL_MONITOR_1"] = temp
+
 temp = {}
 temp["mac"] = b'0\xae\xa4\xd3\x85\xec'
 temp_wifi = {}
@@ -45,7 +90,7 @@ temp_d_outputs[b"init_values"] = [ 0,0,0 ]
 assert len(temp_d_outputs[b"pins"]) == len(temp_d_outputs[b"init_values"])
 temp[b"d_outputs"] = temp_d_outputs
 temp_d_inputs = {}
-temp_d_inputs[b"pins"] = [23,22,19,18]
+temp_d_inputs[b"pins"] = [23,22,5,17]
 temp_d_inputs[b"pullup"] = [ pull_up,pull_up,pull_up,pull_up ]
 assert len(temp_d_inputs[b"pins"]) == len(temp_d_inputs[b"pullup"])
 temp_d_inputs[b"debounce"] = 2

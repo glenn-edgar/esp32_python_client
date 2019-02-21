@@ -30,7 +30,7 @@ if __name__ == "__main__":
 
    msg_generator = ESP32_Message_Generator(transport)
    print(configuration.keys())
-  
+   
    file_transfer = FILE_TRANSFER( transport,configuration )
 
    print("starting thread \n")
